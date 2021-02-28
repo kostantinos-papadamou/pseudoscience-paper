@@ -28,15 +28,16 @@ If you make use of any modules available in this codebase in your work, please c
 
 - [Overview](#overview)
 - [Installation](#installation)
-- [Detection of Pseudoscientific Videos](#part-1-detection-of-pseudoscientific-videos)
-  - [Classifier Architecture](#classifier-architecture)
-  - [Prerequisites](#prerequisites)
-  - [Classifier Codebase](#classifier-codebase)
-  - [Classifier Usage](#classifier-usage)
-- [YouTube Recommendation Algorithm Audit Framework](#part-2-youtube-recommendation-algorithm-audit-framework)
-  - [Framework Prerequisites](#framework-usage)
-  - [User Profile Creation](#1-user-profile-creation)
-  - [Framework Usage](#2-framework-usage)
+- [Part 1: Detection of Pseudoscientific Videos](#part-1-detection-of-pseudoscientific-videos)
+  - [Classifier Architecture](#11-classifier-architecture)
+  - [Prerequisites](#12-prerequisites)
+  - [Classifier Codebase (Model Training)](#13-training-the-classifier)
+  - [Classifier Usage](#14-classifier-usage)
+- [Part 2: YouTube Recommendation Algorithm Audit Framework](#part-2-youtube-recommendation-algorithm-audit-framework)
+  - [Framework Prerequisites](#21-framework-prerequisites)
+  - [User Profile Creation](#22-user-profile-creation)
+  - [Framework Usage (Running Experiments)](#23-framework-usage)
+  - [Framework Common Issues](#24-framework-common-issues)
 - [Acknowledgements](#acknowledgements)
 - [LICENSE](#license)
 
@@ -58,6 +59,7 @@ More specifically, we make publicly available the following set of tools and lib
 3. An open source library that provides a unified framework for assessing the effects of personalization on YouTube video recommendations in multiple parts of the platform.
 
 # Installation
+Follow the steps below to install and configure all prerequisites for both the training and usage of the Pseudoscientific Content Detection Classifier (Part 1), and for using our YouTube Audit Framework (Part 2). 
 
 ### 1. Create a Python >=3.6 Virtual Environment
 ```bash
@@ -99,10 +101,12 @@ pip install --upgrade google-api-python-client
 Our codebase uses HTTPS Proxies for multiple purposes: 
 - For downloading the transcripts of YouTube videos; and 
 - The YouTube Recommendation Algorithm Audit Framework uses an HTTPS Proxy for each one of the user profiles and browser instances that it maintains. 
-  This is mainly to ensure that all User Profiles used in our framework have the same location and avoid changes to our results due to location.
+  This is mainly to ensure that all User Profiles used in our framework have the same geolocation and avoid changes to our results due to geolocation personalization.
 
 You can either use your own HTTPS Proxies or buy some online and set them in the following files:
-```...py``` and ```helpers/config/config.py```.
+- ```youtubeauditframework/userprofiles/....py```: Includes the HTTPS Proxies used to simulate distinct logged-in user profiles accessing YouTube from specific geolocations. 
+  Preferrably, according to our Audit framework, all HTTPS Proxies set in this file MUST be from similar locations (e.g., "US-San Fransisco-California"). 
+- ```helpers/config/config.py```: Includes the HTTPS Proxies used to download the transcript of YouTube videos using ```youtube-dl```.
 
 
 
@@ -110,7 +114,7 @@ You can either use your own HTTPS Proxies or buy some online and set them in the
 We implement a deep learning model geared to detect pseudoscientific YouTube videos. 
 As also described in our paper, to train and test our model we use the dataset available <a href="">here</a>.
 
-## Classifier Architecture
+## 1.1. Classifier Architecture
 ![Model Architecture Diagram](https://github.com/kostantinos-papadamou/pseudoscience-paper/blob/master/classifier/architecture/model_architecture.png)
 
 ### Description
@@ -134,8 +138,8 @@ To avoid over-fitting, we regularize using the Dropout technique; at each fully-
 Finally, the Fusing Network output is fed to the last neural network of two units with softmax activation, which yields the probabilities that a particular video is pseudoscientific or not. 
 We implement our classifier using Keras with Tensorflow as the back-end.
 
-## Prerequisites
-1.  Download pre-trained fastText word vectors that we fine-tune during feature engineering on our dataset: 
+## 1.2. Prerequisites
+### 1.2.1.  Download pre-trained fastText word vectors that we fine-tune during feature engineering on our dataset: 
 ```bash
 cd pseudoscientificvideosdetection/models/feature_extraction
 
@@ -144,31 +148,31 @@ wget https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.v
 unzip wiki-news-300d-1M.vec.zip
 ```
 
-2. Create the following MongoDB Collections:
-- groundtruth_videos
-- groundtruth_videos_comments
-- groundtruth_videos_transcripts
+### 1.2.2. Create the following MongoDB Collections:
+- ```groundtruth_videos```
+- ```groundtruth_videos_comments```
+- ```groundtruth_videos_transcripts```
 
 ** If you are using our <a href="https://zenodo.org/record/4558469#.YDfBCmr7Rqs">dataset</a> please make sure that you create the appropriate MongoDB collections and import the data in each collection. 
 
 
 
-## Training the Classifier
+## 1.3. Training the Classifier
 Below we describe how can you use the codebase to train our classifier using either our own data available <a href="">here</a>, 
 or using your own dataset. 
 We note that, our model is optimized for the detection of pseudoscientific content related to COVID-19, Anti-vaccination, Anti-mask, and Flat Earth. 
 However, feel free to extend/enhance the provided codebase implementing your own deep learning model optimized for your use case.
 
-### Step 1. Fine-tune separate fastText models for each Video Metadata Type
+### Step A. Fine-tune separate fastText models for each Video Metadata Type
 In this step, we fine-tune four separate fastText models, one for each different video metadata type, 
 which we use during the training of Deep Learning model to generate embeddings for each different video metadata type. 
 This step is only required to run once.
 
-### Step 2. Train the Pseudoscience Deep Learning Model
+### Step B. Train the Pseudoscience Deep Learning Model
 At this step, we train and validate the Pseudoscientific Content Detection Deep Learning model using 10-fold cross-validation.
 At the end of the training, the best model will be stored in: ```pseudoscientificvideosdetection\models\pseudoscience_model_final.hdf5```.
 
-#### Classifier Training Example:
+### Classifier Training Example:
 ```python
 from dataset.DatasetUtils import DatasetUtils
 from classifier.featureengineering.FeatureEngineeringModels import FeatureEngineeringModels
@@ -211,7 +215,7 @@ classifierTrainingObject.train_model()
 ```
 
 
-### Classifier Usage
+## 1.4. Classifier Usage
 In this repository, we also include a Python package that uses the trained classifier, which can be used by anyone who wants to train our classifier using our codebase and then use it to detect pseudoscientific videos on YouTube.
 The available Python module accepts a YouTube Video ID as input, and implements all the necessary steps to download the required information of the given video, extract the required features, and classifies the video using the trained classifier.
 Note that, the classifier is supposed to be trained and used to detect pseudoscientific videos on YouTube related to the following topics: a) COVID-19; b) Anti-vaccination; c) Anti-mask; and d) Flat Earth.
@@ -219,7 +223,7 @@ Note that, the classifier is supposed to be trained and used to detect pseudosci
 Finally, in order to use this package you first need to train the classifier using our classifier' codebase, and also to provide your own YouTube Data API key.
 If case you want to train the classifier using our own dataset, you request access to it and download it from <a href="https://zenodo.org/record/4558469#.YDfBCmr7Rqs">here</a>.
 
-#### Example Usage:
+### Classifier Usage Example:
 ```python
 # Import the PSeudoscientific Videos Detection package
 from pseudoscientificvideosdetection.PseudoscienceClassifier import PseudoscienceClassifier
@@ -244,29 +248,82 @@ prediction, confidence_score = pseudoscienceClassifier.classify(video_details=vi
 
 # Part 2: YouTube Recommendation Algorithm Audit Framework
 
-## Prerequisites
+## 2.1. Framework Prerequisites
 
-1. create mongodb collections
+### 2.1.1. Create the following MongoDB Collections:
 
-1. download chrome webdriver
+- ```audit_framework_videos```: All videos of the YouTube Audit framework will be stored in this collection.
+- ```audit_framework_youtube_homepage```: Holds the details of each repetition of the **YouTube Homepage** audit experiment.
+- ```audit_framework_youtube_search```: Holds the details of each repetition of the **YouTube Search Results** audit experiment.
+- ```audit_framework_youtube_video_recommendations```: Holds the details of each repetition of the **YouTube Video Recommendations** audit experiment.
 
-## User Profile Creation
+### 2.1.2. Download Google ChromeDriver
+You can download the ChromeDriver that matches the one of your local Google Chrome version from <a href="https://chromedriver.chromium.org/downloads">here</a>. 
+We recommend the usage of Google ```ChromeDriver 83.0.4103.39```, however, if you download another one please make sure that you update ```youtubeauditframework/utils/config.py```.
+
+- **Linux:**
+  ```bash
+  cd youtubeauditframework/utils/webdrivers
+  
+  wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
+  
+  unzip chromedriver_linux64.zip
+  
+  rm chromedriver_linux64.zip
+  ```
+
+- **MacOS X:**
+  ```bash
+  cd youtubeauditframework/utils/webdrivers
+  
+  wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_mac64.zip
+  
+  unzip chromedriver_mac64.zip
+  
+  rm chromedriver_mac64.zip
+  ```
+
+
+## 2.2. User Profile Creation
+
+### 2.2.1. Create Google (YouTube) Accounts
 
 1. create profile folders and login and train them
 
-## Framework Usage
+### 2.2.2. User Profile Training (Build User's Watch History)
+
+
+## 2.3. Framework Usage
 - login everytime from before
 
-## Common Issues
-Unfortunately, due to Google Chrome Updates or other updates on the YouTube website our framework may not work directly. 
-In this case, we provide below some of the most common issues that we faced to assist you with solving them when using our framework. 
+### 2.3.1. Running Experiments
 
-1. Google Chrome version and prefixed User Agent of our crawler:
-
-2. Ensure that all User Profiles are logged in...
+### 2.3.2 Experiments Results Analysis
 
 
+## 2.4. Framework Common Issues
+Unfortunately, due to regular Google Chrome Updates or other updates on the YouTube Website, our framework may not function properly from time to time. 
+In this case, we list below some of the most common issues that we faced to assist you with overcoming them when using our framework. 
 
+#### - Google Chrome version and User-Agent of our crawler:
+If you find problems running our framework (i.e., the browser is closing right after you start an experiment), then this probably due to a mismatch 
+between the declared ChromeDriver downloaded, the User-Agent declared in ```youtubeauditframework/utils/config.py``` and the current version of your 
+installed Google Chrome. It is better if all these three match and you can start by finding the version of your installed browser in its "About Google Chrome" section.
+You can download the ChromeDriver that matches your installed Google Chrome and Operating System from <a href="https://chromedriver.chromium.org/downloads">here</a>.
+Last, if you do not use the recommended ChromeDriver version then make sure that you update USer-Agent string in ```youtubeauditframework/utils/config.py```.
+
+#### - Regular updates of YouTube's HTML/CSS codebase:
+Automated functionalities of framework, like getting the recommended videos of a given video, or deleting the watching history 
+of a logged-in user may not work from time to time and this is mainly because YouTube regularly updates its HTML and CSS classes. 
+Hence, when you have such problems you may need to update the codebase of our framework with the latest XPaths of each element (i.e., button, video thumbnail) 
+that you can find by inspecting each element on the YouTube website (using Google Chrome inspect option).    
+
+#### - Ensure that all User Profiles are logged-in:
+Before running an experiment with a given User Profile, ensure that this user is logged-in. 
+You can do this by running the helper script in ```youtubeauditframework/userprofiles/helpers/manual_user_profile_login.py```.
+You can set the desired User Profile in the beginning of this script, and when running this helper script the corresponding browser (with the details and activity of this user) will open. 
+Then you will be able to manually follow the authentication  flow and authenticate this user profile on YouTube. 
+Upon successful authentication, please ensure that you properly close the opened browser window before running any experiments using this user profile.
 
 
 
@@ -275,24 +332,5 @@ In this case, we provide below some of the most common issues that we faced to a
 Please see the <a href="https://arxiv.org/abs/2010.11638">paper</a> for funding details and non-code related acknowledgements.
 
 # LICENSE
+
 MIT License
-
-Copyright (c) 2021 Kostantinos Papadamou
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
