@@ -16,9 +16,6 @@ class YouTubeVideoDownloader(object):
     of YouTube videos: 1) Video Snippet; 2) Video Tags; 3) Video Transcript; and 4) Video Comments.
     """
     def __init__(self, api_key):
-        # Create a Configuration Object
-        self.CONFIG = Config()
-
         """ YouTube API Configuration """
         self.YOUTUBE_API_SERVICE_NAME = "youtube"
         self.YOUTUBE_API_VERSION = "v3"
@@ -29,7 +26,7 @@ class YouTubeVideoDownloader(object):
         self.HTTPS_PROXY_COUNTER = 0
         self.HTTPS_PROXY_USED = 0
         self.HTTPS_PROXY_REQUESTS = 0
-        self.HTTPS_PROXY = self.CONFIG.HTTPS_PROXIES_LIST[self.HTTPS_PROXY_USED]
+        self.HTTPS_PROXY = Config.HTTPS_PROXIES_LIST[self.HTTPS_PROXY_USED]
 
         """ Data Directories """
         self.VIDEO_TRANSCRIPT_BASE_DIR = 'data/transcript'
@@ -65,10 +62,10 @@ class YouTubeVideoDownloader(object):
         if self.HTTPS_PROXY_REQUESTS % 10 == 0 or force_change:
             self.HTTPS_PROXY_REQUESTS = 0
             self.HTTPS_PROXY_COUNTER += 1
-            self.HTTPS_PROXY_USED = self.HTTPS_PROXY_COUNTER % len(self.CONFIG.HTTPS_PROXIES_LIST)
+            self.HTTPS_PROXY_USED = self.HTTPS_PROXY_COUNTER % len(Config.HTTPS_PROXIES_LIST)
 
             # Change the HTTP Proxy used
-            self.HTTPS_PROXY = self.CONFIG.HTTPS_PROXIES_LIST[self.HTTPS_PROXY_USED]
+            self.HTTPS_PROXY = Config.HTTPS_PROXIES_LIST[self.HTTPS_PROXY_USED]
         return
 
     def get_recommended_videos(self, video_id):
@@ -87,7 +84,7 @@ class YouTubeVideoDownloader(object):
                     type="video",
                     part="id",
                     relevanceLanguage="en",
-                    maxResults=self.CONFIG.RECOMMENDED_VIDEOS_THRESHOLD
+                    maxResults=Config.RECOMMENDED_VIDEOS_THRESHOLD
                 ).execute()
 
                 # Get related video ides in an array
@@ -99,10 +96,11 @@ class YouTubeVideoDownloader(object):
                 # Sleep for 30 seconds Change API KEY
                 time.sleep(30)
 
-    def download_video_metadata(self, video_id):
+    def download_video_metadata(self, video_id, retrieve_recommended_videos=None):
         """
         Method that queries the YouTube Data API and retrieves the details of a given video.
         :param video_id: the YouTube Video for which we want to get its metadata
+        :param retrieve_recommended_videos: whether to force the retrieval of the recommended videos of the given YouTube video
         :return:
         """
         # Send HTTP Request to get Video Info
@@ -120,8 +118,11 @@ class YouTubeVideoDownloader(object):
                 except:
                     return None
 
-                # Get Recommended Videos
-                if self.CONFIG.RETRIEVE_RECOMMENDED_VIDEOS:
+                # Retrieve Recommended Videos
+                if retrieve_recommended_videos is not None and retrieve_recommended_videos:
+                    recommended_video_ids = self.get_recommended_videos(video_id=video_id)
+                    mainVideoInformation['relatedVideos'] = recommended_video_ids
+                elif Config.RETRIEVE_RECOMMENDED_VIDEOS and retrieve_recommended_videos is None:
                     recommended_video_ids = self.get_recommended_videos(video_id=video_id)
                     mainVideoInformation['relatedVideos'] = recommended_video_ids
                 else:
@@ -160,7 +161,7 @@ class YouTubeVideoDownloader(object):
             os.umask(original_umask)
 
         # Call the download_video_comments.py script to get the given video_id's comments
-        os.system("python3 youtubescripts/download_video_comments.py {0} {1} {2} {3}".format(video_id, comments_dir, self.CONFIG.LIMIT_PAGES_COMMENTS, self.YOUTUBE_API_KEY))
+        os.system("python3 youtubescripts/download_video_comments.py {0} {1} {2} {3}".format(video_id, comments_dir, Config.LIMIT_PAGES_COMMENTS, self.YOUTUBE_API_KEY))
         return
 
     def video_transcript_downloaded(self, video_id):
@@ -193,7 +194,7 @@ class YouTubeVideoDownloader(object):
 
         # Download Video Transcript
         try:
-            output = subprocess.check_output("bash scripts/download_video_transcript.sh {0} {1} {2}".format(video_url, path, self.HTTPS_PROXY), shell=True)
+            output = subprocess.check_output("bash youtubescripts/download_video_transcript.sh {0} {1} {2}".format(video_url, path, self.HTTPS_PROXY), shell=True)
             if "HTTP_ERROR" in str(output):
                 return
             # Increase current HTTP Proxy usage
@@ -215,11 +216,11 @@ class YouTubeVideoDownloader(object):
             return None
 
         """ VIDEO TRANSCRIPT """
-        if self.CONFIG.DOWNLOAD_VIDEO_TRANSCRIPT and not self.video_transcript_downloaded(video_id=video_id):
+        if Config.DOWNLOAD_VIDEO_TRANSCRIPT and not self.video_transcript_downloaded(video_id=video_id):
             self.download_video_transcript(video_id=video_id)
 
         """ VIDEO COMMENTS """
-        if self.CONFIG.DOWNLOAD_VIDEO_COMMENTS and not self.video_comments_downloaded(video_id=video_id):
+        if Config.DOWNLOAD_VIDEO_COMMENTS and not self.video_comments_downloaded(video_id=video_id):
             self.download_video_comments(video_id=video_id)
 
         return video_metadata

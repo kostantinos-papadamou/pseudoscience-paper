@@ -1,0 +1,35 @@
+[
+    {
+        "nickname": "..._USER",
+        "username": "example1@gmail.com",
+        "phone_number": "123456789",
+        "name": "Alice",
+        "surname": "Doe",
+        "date_of_birth": "dd/mm/yyyy",
+        "age": 30,
+        "gender": "female",
+        "proxy": "IP:PORT"
+    },
+    {
+        "nickname": "..._USER",
+        "username": "example2@gmail.com",
+        "phone_number": "...",
+        "name": "...",
+        "surname": "...",
+        "date_of_birth": "dd/mm/yyyy",
+        "age": 30,
+        "gender": "female",
+        "proxy": "IP:PORT"
+    },
+    {
+        "nickname": "..._USER",
+        "username": "example3@gmail.com",
+        "phone_number": "...",
+        "name": "...",
+        "surname": "...",
+        "date_of_birth": "dd/mm/yyyy",
+        "age": 30,
+        "gender": "female",
+        "proxy": "IP:PORT"
+    }
+]

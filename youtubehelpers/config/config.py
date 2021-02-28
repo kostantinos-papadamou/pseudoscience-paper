@@ -5,6 +5,7 @@ class Config(object):
     Static class that includes the configuration of the YouTube Video metadata downloader
     """
     # General
+    YOUTUBE_DATA_API_KEY = '<YOUR_YOUTUBE_DATA_API_KEY>'  # Used by default when an API Key is not provided to the YouTubeVideoDownloader class
     DOWNLOAD_VIDEO_TRANSCRIPT = True
     DOWNLOAD_VIDEO_COMMENTS = True
 

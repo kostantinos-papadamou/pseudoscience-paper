@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 #/pseudoscientificvideosdetection/models/pseudoscience_model_final.hdf5
 .idea/
+.DS_Store

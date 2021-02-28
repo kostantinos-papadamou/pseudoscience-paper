@@ -61,43 +61,44 @@ More specifically, we make publicly available the following set of tools and lib
 # Installation
 Follow the steps below to install and configure all prerequisites for both the training and usage of the Pseudoscientific Content Detection Classifier (Part 1), and for using our YouTube Audit Framework (Part 2). 
 
-### 1. Create a Python >=3.6 Virtual Environment
+### Create and activate Python >=3.6 Virtual Environment
 ```bash
 python3 -m venv virtualenv
 
 source virtualenv/bin/activate
 ```
 
-### 2. Install required packages
+### Install required packages
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Install MongoDB
+### Install MongoDB
 To store the metadata of YouTube videos, as well as for other information we use MongoDB. Install MongoDB on your own system or server using:
 
 - **Ubuntu:** Follow instructions <a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/">here</a>.
 - **Mac OS X:** Follow instructions <a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/">here</a>.
 
-#### MongoDB Graphical User Interface 
+
+#### MongoDB Graphical User Interface:
 We suggest the use of <a href="https://robomongo.org/">Robo3T</a> as a user interface for interacting with your MongoDB instance.
 
 
-### 4. Install Additional Requirements
+### Additional Requirements
 
-#### 4.1. Install the youtube-dl package
+#### Install the youtube-dl package
 ```bash
 pip install youtube-dl
 ```
 **Make use of ```youtube-dl``` wisely, carefully sending requests so that you do not spam YouTube with requests and get blocked.
 
-#### 4.2. Install Google APIs Client library for Python
+#### Install Google APIs Client library for Python
 This is the library utilized to call the YouTube Data API from Python
 ```bash
 pip install --upgrade google-api-python-client
 ```
 
-### 5. HTTPS Proxies
+### HTTPS Proxies
 Our codebase uses HTTPS Proxies for multiple purposes: 
 - For downloading the transcripts of YouTube videos; and 
 - The YouTube Recommendation Algorithm Audit Framework uses an HTTPS Proxy for each one of the user profiles and browser instances that it maintains. 
@@ -148,12 +149,17 @@ wget https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.v
 unzip wiki-news-300d-1M.vec.zip
 ```
 
-### 1.2.2. Create the following MongoDB Collections:
+### 1.2.2. Create MongoDB Collections
+
+1. Create a MongoDB database called: ```youtube_pseudoscience_dataset``` either using Robo3T GUI or from the terminal.
+
+
+2. Create the following MongoDB collections under the ```youtube_pseudoscience_dataset``` database that you just created:
 - ```groundtruth_videos```
 - ```groundtruth_videos_comments```
 - ```groundtruth_videos_transcripts```
 
-** If you are using our <a href="https://zenodo.org/record/4558469#.YDfBCmr7Rqs">dataset</a> please make sure that you create the appropriate MongoDB collections and import the data in each collection. 
+**Note:** If you are using our <a href="https://zenodo.org/record/4558469#.YDfBCmr7Rqs">dataset</a> please make sure that you create the appropriate MongoDB collections and import the data in each collection. 
 
 
 
@@ -171,6 +177,7 @@ This step is only required to run once.
 ### Step B. Train the Pseudoscience Deep Learning Model
 At this step, we train and validate the Pseudoscientific Content Detection Deep Learning model using 10-fold cross-validation.
 At the end of the training, the best model will be stored in: ```pseudoscientificvideosdetection\models\pseudoscience_model_final.hdf5```.
+We provide below an example of how you can use our codebase to train the Pseudoscientific Content Detection classifier.
 
 ### Classifier Training Example:
 ```python
@@ -227,10 +234,11 @@ If case you want to train the classifier using our own dataset, you request acce
 ```python
 # Import the PSeudoscientific Videos Detection package
 from pseudoscientificvideosdetection.PseudoscienceClassifier import PseudoscienceClassifier
-from helpers.YouTubeVideoDownloader import YouTubeVideoDownloader
+from youtubehelpers.YouTubeVideoDownloader import YouTubeVideoDownloader
 
 # Create an object of the classifier
 pseudoscienceClassifier = PseudoscienceClassifier()
+# You need to provide your own YouTube Data API Key when creating an object of the YouTube Video Downloader helper class
 ytDownloader = YouTubeVideoDownloader(api_key='<YOUR_YOUTUBE_DATA_API_KEY>')
 
 # Download YouTube Video Details
@@ -250,8 +258,12 @@ prediction, confidence_score = pseudoscienceClassifier.classify(video_details=vi
 
 ## 2.1. Framework Prerequisites
 
-### 2.1.1. Create the following MongoDB Collections:
+### 2.1.1. Create MongoDB:
 
+1. Create a MongoDB database called: ```youtube_recommendation_audit``` either using Robo3T GUI or from the terminal.
+
+
+2. Create the following MongoDB collections under the ```youtube_recommendation_audit``` database that you just created:
 - ```audit_framework_videos```: All videos of the YouTube Audit framework will be stored in this collection.
 - ```audit_framework_youtube_homepage```: Holds the details of each repetition of the **YouTube Homepage** audit experiment.
 - ```audit_framework_youtube_search```: Holds the details of each repetition of the **YouTube Search Results** audit experiment.
@@ -267,7 +279,7 @@ We recommend the usage of Google ```ChromeDriver 83.0.4103.39```, however, if yo
   
   wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
   
-  unzip chromedriver_linux64.zip
+  unzip chromedriver_linux64.zip && mv chromedriver_linux64 chromedriver
   
   rm chromedriver_linux64.zip
   ```
@@ -278,7 +290,7 @@ We recommend the usage of Google ```ChromeDriver 83.0.4103.39```, however, if yo
   
   wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_mac64.zip
   
-  unzip chromedriver_mac64.zip
+  unzip chromedriver_mac64.zip && mv chromedriver_mac64 chromedriver
   
   rm chromedriver_mac64.zip
   ```
@@ -287,18 +299,104 @@ We recommend the usage of Google ```ChromeDriver 83.0.4103.39```, however, if yo
 ## 2.2. User Profile Creation
 
 ### 2.2.1. Create Google (YouTube) Accounts
+You have to create your own Google Accounts for each YouTube user profile that you want to perform experiments with.
+According to our framework, the only aspect of each user profile that differs is the watch history, hence all the account information must 
+be the similar for all user profiles (e.g., similar age, gender, country, etc.) to avoid confounding effects by profile differences.
+However, feel free to extend our framework assessing more personalization factors (i.e., age) and create user profiles based on your use case.
 
-1. create profile folders and login and train them
+To decrease the likelihood of Google automatically detecting your user profiles, please carefully craft each one assigning them a unique name and surname and perform standard phone verification.
+While crafting user profiles, make sure that you also update file ```youtubeauditframework/userprofiles/info/user_profiles_info.json``` with the information of each created YouTube User Profile. 
 
-### 2.2.2. User Profile Training (Build User's Watch History)
+### 2.2.2. Initialize and Authenticate User Profile
+To avoid Google banning or flagging the created user profiles, we perform manual authentication of each user profile before performing experiments using our framework.
+We provide a script to perform user authentication and create all the necessary files for each crafted YouTube User profile before running any audit experiment. 
+To do this, perform the following for each created User Profile 
 
+#### Step 1. Initialize User Profile Browser data directory 
+```bash
+cd youtubeauditframework/userprofiles/helpers
+
+python initialize_authenticate_user_profile.py <USER_PROFILE_NICKNAME>
+```
+Make sure that you run this for each user profile by providing the nickname of each user profile (as set in user profiles information file) in the beginning of the script. 
+When running this script, a browser will automatically open and you will be able to perform manual Google authentication.
+
+#### Step 2. Manual User Profile Authentication
+Previous step will open a browser and load the YouTube authentication page. Once this is done, proceed and authenticate the corresponding user manually.
+
+#### Step 3. Install Adblock Plus
+Once the user is authenticated you MUST install Adblock Plus manually by visiting: https://adblockplus.org/
+
+#### Step 4. Close the browser and repeat all steps for each User Profile.
+Please ensure that you properly close the browser window before executing this script for another user profile, or before running any experiment.
+
+### 2.2.3. User Profile Training (Build User's Watch History)
+Once you have created all the User Profiles that you want to use and you have also authenticated all users to YouTube, then you can use the following class to 
+build the watch history of each user: ```youtubeauditframework/userprofiles/BuildUserWatchHistory.py```.
+
+#### Build User Watch History Example
+```python
+from youtubeauditframework.userprofiles.BuildUserWatchHistory import BuildUserWatchHistory
+
+# Set the User Profile's nickname for which you want to build the Watch History
+user_profile = '<USER_PROFILE_NICKNAME>'
+
+# Create an object of the helper class for building the User Profile's Watch History
+buildUserWatchHistoryHelper = BuildUserWatchHistory(user_profile=user_profile)
+
+""" Build the User's Watch History """
+# OPTION 1: Build the watch history of the user profile, but first create a file with the following naming convention 
+#           "<USER_PROFILE_NICKNAME>_watch_history_videos.txt", which includes all the YouTube Video IDs separated by
+#           breakline (Enter Key). Store this file inside the "youtubeauditframework/userprofiles/info/" directory.
+buildUserWatchHistoryHelper.build_watch_history()
+
+# OPTION 2: Build the watch history of the user profile by providing a list of minimum 100 YouTube Video IDs.
+# watch_history_videos = ['<VIDEO_ID>', '<VIDEO_ID>', '<VIDEO_ID>']
+# buildUserWatchHistoryHelper.build_watch_history(watch_videos_list=watch_history_videos)
+
+# Ensure that the browser has closed
+buildUserWatchHistoryHelper.close_selenium_browser()
+```
 
 ## 2.3. Framework Usage
-- login everytime from before
+We focus on three parts of the platform: 1) the homepage; 2) the search results page; and 3) the video recommendations section (recommendations when watching videos). 
+With our framework, we simulate logged-in and non-logged-in user's behavior with varying interests and measure how the watch history affects pseudoscientific content recommendation.
+Below, we provide examples of how to run the difference experiments for each part of the YouTube platform.
 
 ### 2.3.1. Running Experiments
 
-### 2.3.2 Experiments Results Analysis
+#### - YouTube Homepage
+```bash
+
+```
+
+#### - YouTube Search Results
+```bash
+
+```
+
+#### - YouTube Video Recommendations Section
+```bash
+
+```
+
+
+
+### 2.3.2. Download and Annotate all Experiments' Videos
+When downloading YouTube videos while running the YouTube Recommendation Algorithm audit experiments, we only download and save the metadata of each video.
+Hence, we provide a script that you can run after you finished running the audit experiments so that you also download the comments and the transcripts of each video, 
+which are both required to annotate a video.
+
+Execute the following to download missing videos' information and annotate all videos that are not annotated, yet:
+```bash
+cd youtubeauditframework/helpers
+
+python download_annotate_experiment_videos.py
+```
+
+**Note:** Before running this script you need to open the file and enter your YouTube Data API key.
+
+### 2.3.3. Experiments Results Analysis
 
 
 ## 2.4. Framework Common Issues
@@ -320,13 +418,17 @@ that you can find by inspecting each element on the YouTube website (using Googl
 
 #### - Ensure that all User Profiles are logged-in:
 Before running an experiment with a given User Profile, ensure that this user is logged-in. 
-You can do this by running the helper script in ```youtubeauditframework/userprofiles/helpers/manual_user_profile_login.py```.
+You can do this by running the helper script in ```youtubeauditframework/userprofiles/helpers/initialize_authenticate_user_profile.py```.
 You can set the desired User Profile in the beginning of this script, and when running this helper script the corresponding browser (with the details and activity of this user) will open. 
 Then you will be able to manually follow the authentication  flow and authenticate this user profile on YouTube. 
 Upon successful authentication, please ensure that you properly close the opened browser window before running any experiments using this user profile.
 
-
-
+#### - Enable Third Party Access to all YouTube Accounts:
+If you have trouble accessing your created YouTube accounts from the automated browsers, then ensure that "Less secure app access" is enabled for all accounts.
+You can enable "less secure app access" to a Google Account in the following way:
+- Open a browser and login to Google using the credentials of the corresponding User Profile.
+- Visit <a hred="https://myaccount.google.com/security">Google Account Security</a> settings.
+- Scroll down to "Less secure app access" section and click "Turn on access" or enable it directly from <a href="myaccount.google.com/lesssecureapps">here</a>.
 
 # Acknowledgements
 Please see the <a href="https://arxiv.org/abs/2010.11638">paper</a> for funding details and non-code related acknowledgements.

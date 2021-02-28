@@ -3,7 +3,7 @@
 from dataset.DatasetUtils import DatasetUtils
 from classifier.featureengineering.DataPreparation import DataPreparation
 from classifier.model.PseudoscienceDeepLearningModel import PseudoscienceDeepLearningModel
-from classifier.config.config import Config as model_config
+from classifier.config.config import Config
 
 # Tensorflow < 2.0.0 (installed v1.13.1)
 from tensorflow.keras.models import load_model
@@ -53,9 +53,6 @@ class ClassifierTraining(object):
         self.TRAINING_MODELS_BASE_DIR = 'classifier/training/temp'
         self.BEST_MODEL_BASE_DIR = 'pseudoscientificvideosdetection/models'
 
-        # Create Config Object
-        self.CONFIG = model_config
-
         # Create a Pseudoscience Model Object
         self.DEEP_LEARNING_MODEL_OBJ = PseudoscienceDeepLearningModel()
 
@@ -71,19 +68,19 @@ class ClassifierTraining(object):
         """ Get Ground-truth Video Features """
         print('\n--- Retrieving Model Input Features...')
         # 1. Get VIDEO SNIPPET features (fastText embeddings vector)
-        if self.CONFIG.INPUT_FEATURES_CONFIG['video_snippet']:
+        if Config.INPUT_FEATURES_CONFIG['video_snippet']:
             self.video_snippet_features = self.DATA_PREPARATION.get_video_snippet_model_input_features(overwrite=False)
 
         # 2. Get VIDEO TAGS features (fastText embeddings vector)
-        if self.CONFIG.INPUT_FEATURES_CONFIG['video_tags']:
+        if Config.INPUT_FEATURES_CONFIG['video_tags']:
             self.video_tags_features = self.DATA_PREPARATION.get_video_tags_model_input_features(overwrite=False)
 
         # 3. Get VIDEO TRANSCRIPT features (fastText embeddings vector)
-        if self.CONFIG.INPUT_FEATURES_CONFIG['video_transcript']:
+        if Config.INPUT_FEATURES_CONFIG['video_transcript']:
             self.video_transcript_features = self.DATA_PREPARATION.get_video_transcript_model_input_features(overwrite=False)
 
         # 4. Get VIDEO COMMENTS features (fastText embeddings vector)
-        if self.CONFIG.INPUT_FEATURES_CONFIG['video_comments']:
+        if Config.INPUT_FEATURES_CONFIG['video_comments']:
             self.video_comments_features = self.DATA_PREPARATION.get_video_comments_model_input_features(overwrite=False)
         return
 
@@ -116,11 +113,11 @@ class ClassifierTraining(object):
         mean_fpr = np.linspace(0, 1, 100)
         kfold_counter = 1
         folds_predicted_probas, folds_performance_metrics, folds_confusion_matrices = list(), list(), list()
-        stratified_kfold = StratifiedKFold(n_splits=self.CONFIG.TOTAL_KFOLDS, shuffle=True, random_state=None)
+        stratified_kfold = StratifiedKFold(n_splits=Config.TOTAL_KFOLDS, shuffle=True, random_state=None)
 
         # Train/Test Model with K-Fold Cross Vaildation
         for train_val_set_indices, test_set_indices in stratified_kfold.split(X=self.dataset_videos, y=self.dataset_labels_categorical):
-            print('\n--- [K-FOLD %d/%d] TRAIN: %d, TEST: %d' % (kfold_counter, self.CONFIG.TOTAL_KFOLDS, len(train_val_set_indices), len(test_set_indices)))
+            print('\n--- [K-FOLD %d/%d] TRAIN: %d, TEST: %d' % (kfold_counter, Config.TOTAL_KFOLDS, len(train_val_set_indices), len(test_set_indices)))
 
             """ TRAIN SET """
             # VIDEO SNIPPET
@@ -153,7 +150,7 @@ class ClassifierTraining(object):
             # Y_test_categorical = np.take(self.dataset_labels_categorical, indices=test_set_indices, axis=0)
 
             """ TRAIN & VALIDATION SETS """
-            indices_train, indices_val = self.DATASET.split_train_test_sets_stratified(labels=Y_train_val_categorical, test_size=self.CONFIG.VALIDATION_SPLIT_SIZE)
+            indices_train, indices_val = self.DATASET.split_train_test_sets_stratified(labels=Y_train_val_categorical, test_size=Config.VALIDATION_SPLIT_SIZE)
 
             # VIDEO SNIPPET
             X_train_snippet = np.take(X_train_val_snippet, indices=indices_train, axis=0)
@@ -176,7 +173,7 @@ class ClassifierTraining(object):
             # Y_val_categorical = np.take(Y_train_val_categorical, indices=indices_val, axis=0)
 
             """ OVERSAMPLING """
-            if self.CONFIG.OVERSAMPLING:
+            if Config.OVERSAMPLING:
                 print('--- Oversampling Train set...')
                 smote = SMOTE(sampling_strategy='not majority')
 
@@ -185,7 +182,7 @@ class ClassifierTraining(object):
                 X_train_video_tags, Y_train_s = smote.fit_resample(X_train_video_tags, Y_train_categorical)
                 X_train_transcript, Y_train_s = smote.fit_resample(X_train_transcript, Y_train_categorical)
                 X_train_comments, Y_train_s = smote.fit_resample(X_train_comments, Y_train_categorical)
-                Y_train_oversampled = np.array([to_categorical(label, self.CONFIG.NB_CLASSES) for label in Y_train_s])
+                Y_train_oversampled = np.array([to_categorical(label, Config.NB_CLASSES) for label in Y_train_s])
                 print('--- [AFTER OVER-SAMPLING] TRAIN: %d, VAL: %d, TEST: %d' % (Y_train_oversampled.shape[0], Y_val_labels.shape[0], Y_test_labels.shape[0]))
             else:
                 Y_train_oversampled = Y_train_one_hot
@@ -203,24 +200,24 @@ class ClassifierTraining(object):
             """ TRAIN THE MODEL """
             # TRAIN SET INPUT
             model_train_input = list()
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_snippet']:
+            if Config.INPUT_FEATURES_CONFIG['video_snippet']:
                 model_train_input.append(X_train_snippet)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_tags']:
+            if Config.INPUT_FEATURES_CONFIG['video_tags']:
                 model_train_input.append(X_train_video_tags)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_transcript']:
+            if Config.INPUT_FEATURES_CONFIG['video_transcript']:
                 model_train_input.append(X_train_transcript)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_comments']:
+            if Config.INPUT_FEATURES_CONFIG['video_comments']:
                 model_train_input.append(X_train_comments)
 
             # VALIDATION SET INPUT
             model_val_input = list()
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_snippet']:
+            if Config.INPUT_FEATURES_CONFIG['video_snippet']:
                 model_val_input.append(X_val_snippet)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_tags']:
+            if Config.INPUT_FEATURES_CONFIG['video_tags']:
                 model_val_input.append(X_val_video_tags)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_transcript']:
+            if Config.INPUT_FEATURES_CONFIG['video_transcript']:
                 model_val_input.append(X_val_transcript)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_comments']:
+            if Config.INPUT_FEATURES_CONFIG['video_comments']:
                 model_val_input.append(X_val_comments)
 
             # Load Deep Learning Model
@@ -228,10 +225,10 @@ class ClassifierTraining(object):
             model = self.DEEP_LEARNING_MODEL_OBJ.get_model()
             model.fit(model_train_input,
                       Y_train_oversampled,
-                      epochs=self.CONFIG.NB_EPOCHS,
-                      batch_size=self.CONFIG.BATCH_SIZE,
+                      epochs=Config.NB_EPOCHS,
+                      batch_size=Config.BATCH_SIZE,
                       validation_data=[model_val_input, Y_val_one_hot],
-                      shuffle=self.CONFIG.SHUFFLE_TRAIN_SET,
+                      shuffle=Config.SHUFFLE_TRAIN_SET,
                       verbose=1,
                       callbacks=[self.early_stopper])
 
@@ -249,21 +246,21 @@ class ClassifierTraining(object):
 
             """ TEST MODEL """
             model_test_input = list()
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_snippet']:
+            if Config.INPUT_FEATURES_CONFIG['video_snippet']:
                 model_test_input.append(X_test_snippet)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_tags']:
+            if Config.INPUT_FEATURES_CONFIG['video_tags']:
                 model_test_input.append(X_test_video_tags)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_transcript']:
+            if Config.INPUT_FEATURES_CONFIG['video_transcript']:
                 model_test_input.append(X_test_transcript)
-            if self.CONFIG.INPUT_FEATURES_CONFIG['video_comments']:
+            if Config.INPUT_FEATURES_CONFIG['video_comments']:
                 model_test_input.append(X_test_comments)
 
             print('--- Making Predictions on the TEST SET...')
-            test_pred_proba = pseudoscience_model.predict(model_test_input, batch_size=self.CONFIG.BATCH_SIZE, verbose=1, steps=None)
-            if self.CONFIG.CLASSIFICATION_THRESHOLD is not None:
+            test_pred_proba = pseudoscience_model.predict(model_test_input, batch_size=Config.BATCH_SIZE, verbose=1, steps=None)
+            if Config.CLASSIFICATION_THRESHOLD is not None:
                 test_predicted_classes = list()
                 for predicted_probas in test_pred_proba:
-                    if predicted_probas[1] >= self.CONFIG.CLASSIFICATION_THRESHOLD:
+                    if predicted_probas[1] >= Config.CLASSIFICATION_THRESHOLD:
                         test_predicted_classes.append(1)
                     else:
                         test_predicted_classes.append(0)
@@ -275,14 +272,14 @@ class ClassifierTraining(object):
             # test_accuracy_without_threshold = accuracy_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1))
             test_accuracy = accuracy_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes)
             # PRECISION
-            # test_precision_without_threshold = precision_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1), average=self.CONFIG.PERFORMANCE_SCORES_AVERAGE)
-            test_precision = precision_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes, average=self.CONFIG.PERFORMANCE_SCORES_AVERAGE)
+            # test_precision_without_threshold = precision_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1), average=Config.PERFORMANCE_SCORES_AVERAGE)
+            test_precision = precision_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes, average=Config.PERFORMANCE_SCORES_AVERAGE)
             # RECALL
-            # test_recall_without_threshold = recall_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1), average=self.CONFIG.PERFORMANCE_SCORES_AVERAGE)
-            test_recall = recall_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes, average=self.CONFIG.PERFORMANCE_SCORES_AVERAGE)
+            # test_recall_without_threshold = recall_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1), average=Config.PERFORMANCE_SCORES_AVERAGE)
+            test_recall = recall_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes, average=Config.PERFORMANCE_SCORES_AVERAGE)
             # F1-SCORE
-            # test_f1_score_without_threshold = f1_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1), average=self.CONFIG.PERFORMANCE_SCORES_AVERAGE)
-            test_f1_score = f1_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes, average=self.CONFIG.PERFORMANCE_SCORES_AVERAGE)
+            # test_f1_score_without_threshold = f1_score(Y_test_one_hot.argmax(axis=1), test_pred_proba.argmax(axis=1), average=Config.PERFORMANCE_SCORES_AVERAGE)
+            test_f1_score = f1_score(Y_test_one_hot.argmax(axis=1), test_predicted_classes, average=Config.PERFORMANCE_SCORES_AVERAGE)
 
             print('\n--- PERFORMANCE METRICS WITH THRESHOLD ---')
             print('--- [KFOLD %d] TEST Accuracy: %.3f' % (kfold_counter, test_accuracy))
@@ -310,7 +307,7 @@ class ClassifierTraining(object):
             time.sleep(3)
 
         # Calculate Means for the ROC Curve and store them in a file
-        mean_tpr /= self.CONFIG.TOTAL_KFOLDS
+        mean_tpr /= Config.TOTAL_KFOLDS
         mean_tpr[-1] = 1.0
         mean_auc = auc(mean_fpr, mean_tpr)
         pickle.dump([mean_fpr, mean_tpr, mean_auc], file=open('{0}/roc_metrics.p'.format(self.TRAINING_MODELS_BASE_DIR), mode='wb'))
