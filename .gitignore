@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+#/pseudoscientificvideosdetection/models/pseudoscience_model_final.hdf5
+.idea/
