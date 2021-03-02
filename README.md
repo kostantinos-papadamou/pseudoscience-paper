@@ -124,7 +124,7 @@ Our codebase uses HTTPS Proxies for multiple purposes:
 You can either use your own HTTPS Proxies or buy some online and set them in the following files:
 - ```youtubeauditframework/userprofiles/info/user_profiles_info.json```: Includes the HTTPS Proxies used to simulate distinct logged-in user profiles accessing YouTube from specific geolocations. 
   Preferrably, according to our Audit framework, all HTTPS Proxies set in this file MUST be from similar locations (e.g., "US-San Fransisco-California"). 
-- ```helpers/config/config.py```: Includes the HTTPS Proxies used to download the transcript of YouTube videos using ```youtube-dl```.
+- ```youtubehelpers/config/YouTubeAPIConfig.py```: Includes the HTTPS Proxies used to download the transcript of YouTube videos using ```youtube-dl```.
 
 ### YouTube Data API
 Our codebase uses the YouTube Data API to download video metadata and for many other purposes like searching YouTube. 
@@ -299,7 +299,7 @@ prediction, confidence_score = pseudoscienceClassifier.classify(video_details=vi
 
 ### 2.1.2. Download Google ChromeDriver
 You can download the ChromeDriver that matches the one of your local Google Chrome version from <a href="https://chromedriver.chromium.org/downloads">here</a>. 
-We recommend the usage of Google ```ChromeDriver 83.0.4103.39```, however, if you download another one please make sure that you update ```youtubeauditframework/utils/config.py```.
+We recommend the usage of Google ```ChromeDriver 83.0.4103.39```, however, if you download another one please make sure that you update ```youtubeauditframework/utils/YouTubeAuditFrameworkConfig.py```.
 
 - **Linux:**
   ```bash
@@ -478,10 +478,10 @@ In this case, we list below some of the most common issues that we faced to assi
 
 #### - Google Chrome version and User-Agent of our crawler:
 If you find problems running our framework (i.e., the browser is closing right after you start an experiment), then this probably due to a mismatch 
-between the declared ChromeDriver downloaded, the User-Agent declared in ```youtubeauditframework/utils/config.py``` and the current version of your 
+between the declared ChromeDriver downloaded, the User-Agent declared in ```youtubeauditframework/utils/YouTubeAuditFrameworkConfig.py``` and the current version of your 
 installed Google Chrome. It is better if all these three match and you can start by finding the version of your installed browser in its "About Google Chrome" section.
 You can download the ChromeDriver that matches your installed Google Chrome and Operating System from <a href="https://chromedriver.chromium.org/downloads">here</a>.
-Last, if you do not use the recommended ChromeDriver version then make sure that you update USer-Agent string in ```youtubeauditframework/utils/config.py```.
+Last, if you do not use the recommended ChromeDriver version then make sure that you update User-Agent string in ```youtubeauditframework/utils/YouTubeAuditFrameworkConfig.py```.
 
 #### - Regular updates of YouTube's HTML/CSS codebase:
 Automated functionalities of framework, like getting the recommended videos of a given video, or deleting the watching history 
