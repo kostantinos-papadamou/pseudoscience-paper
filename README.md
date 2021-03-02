@@ -388,22 +388,46 @@ We focus on three parts of the platform: 1) the homepage; 2) the search results 
 With our framework, we simulate logged-in and non-logged-in user's behavior with varying interests and measure how the watch history affects pseudoscientific content recommendation.
 Below, we provide examples of how to run the difference experiments for each part of the YouTube platform.
 
-### 2.3.1. Running Experiments
+### 2.3.1. Running Audit Experiments
 
 #### - YouTube Homepage
+
+Run the following for each one of your User Profiles:
+
 ```bash
-python youtubeauditframework/perform_audit_youtube_homepage.py USER_PROFILE_NICKNAME
+cd youtubeauditframework
+
+python perform_audit_youtube_homepage.py USER_PROFILE_NICKNAME
 ```
+
+**Note:** We suggest that you simultaneously run this script for each user profile in your scenario to avoid variations in results due to time.
 
 #### - YouTube Search Results
-```bash
 
+Before auditing YouTube Search, you need to identify the **search terms** for which you will focus on your experiments. 
+Then, run the following for each combination of search terms and User Profiles in your use case: 
+
+```bash
+cd youtubeauditframework
+
+python perform_audit_...
 ```
 
-#### - YouTube Video Recommendations Section
-```bash
+**Note:** We suggest that you simultaneously run this script for each Search Term for all the User Profiles in your scenario to avoid variations in results due to time.
 
+
+#### - YouTube Video Recommendations Section (Random Walks on YouTube's Recommendation Graph)
+
+Before auditing YouTube's Video Recommendations Section, you need to identify the **search terms** for which you will focus on your experiments. 
+Then, run the following for each combination of search terms and User Profiles in your use case:
+
+```bash
+cd youtubeauditframework
+
+python perform_audit_...
 ```
+
+**Note:** We suggest that you simultaneously run this script for each Search Term for all the User Profiles in your scenario to avoid variations in results due to time.
 
 
 
@@ -419,12 +443,11 @@ cd youtubeauditframework/helpers
 python download_annotate_experiment_videos.py
 ```
 
-**Note:** Before running this script you need to open the file and enter your YouTube Data API key.
 
-### 2.3.3. Experiments Results Analysis
+## 2.4. Analyzing Audit Experiments Results
 
 
-## 2.4. Framework Common Issues
+## 2.5. Framework Common Issues
 Unfortunately, due to regular Google Chrome Updates or other updates on the YouTube Website, our framework may not function properly from time to time. 
 In this case, we list below some of the most common issues that we faced to assist you with overcoming them when using our framework. 
 
