@@ -1,0 +1,7 @@
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+!youtube_homepage/
+!video_recommendations_section/
+!youtube_search/

@@ -33,10 +33,6 @@ class PseudoscienceClassifier(object):
         # Create a Dataset Object
         self.DATASET = DatasetUtils()
 
-        # Set Base Directories for Video Comments and Transcripts
-        # self.VIDEO_COMMENTS_BASE_DIR = 'data/comments'
-        # self.VIDEO_TRANSCRIPT_BASE_DIR = 'data/transcript'
-
         # Set the base directory of the FastText Classifiers
         self.FASTTEXT_MODELS_DIR = 'pseudoscientificvideosdetection/models/feature_extraction'
         # Load FastText Classifiers

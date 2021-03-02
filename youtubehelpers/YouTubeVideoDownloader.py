@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from helpers.config.config import Config
+from youtubehelpers.config.YouTubeAPIConfig import Config
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from socket import error as SocketError
@@ -15,11 +15,16 @@ class YouTubeVideoDownloader(object):
     Class that downloads among other information, the following required for classification metadata
     of YouTube videos: 1) Video Snippet; 2) Video Tags; 3) Video Transcript; and 4) Video Comments.
     """
-    def __init__(self, api_key):
+    def __init__(self):
         """ YouTube API Configuration """
-        self.YOUTUBE_API_SERVICE_NAME = "youtube"
-        self.YOUTUBE_API_VERSION = "v3"
-        self.YOUTUBE_API_KEY = api_key
+        # Ensure that the YouTube Data API Key is correctly set
+        if Config.YOUTUBE_DATA_API_KEY == 'YOUR_YOUTUBE_DATA_API_KEY':
+            exit('[ERROR] Please set your YouTube Data API Key in youtubehelpers/config/YouTubeAPIConfig.py')
+
+        # Initialize YouTube Data API Client
+        self.YOUTUBE_API_SERVICE_NAME = Config.YOUTUBE_API_SERVICE_NAME
+        self.YOUTUBE_API_VERSION = Config.YOUTUBE_API_VERSION
+        self.YOUTUBE_API_KEY = Config.YOUTUBE_DATA_API_KEY
         self.YOUTUBE_API = build(self.YOUTUBE_API_SERVICE_NAME, self.YOUTUBE_API_VERSION, developerKey=self.YOUTUBE_API_KEY)
 
         """ HTTPS PROXIES """
@@ -27,10 +32,12 @@ class YouTubeVideoDownloader(object):
         self.HTTPS_PROXY_USED = 0
         self.HTTPS_PROXY_REQUESTS = 0
         self.HTTPS_PROXY = Config.HTTPS_PROXIES_LIST[self.HTTPS_PROXY_USED]
+        if self.HTTPS_PROXY == 'HOST:PORT':
+            exit('[ERROR] Please set correct HTTPS Proxies in youtubehelpers/config/YouTubeAPIConfig.py')
 
         """ Data Directories """
-        self.VIDEO_TRANSCRIPT_BASE_DIR = 'data/transcript'
-        self.VIDEO_COMMENTS_BASE_DIR = 'data/comments'
+        self.VIDEO_TRANSCRIPT_BASE_DIR = 'videosdata/transcript'
+        self.VIDEO_COMMENTS_BASE_DIR = 'videosdata/comments'
         return
 
     @staticmethod

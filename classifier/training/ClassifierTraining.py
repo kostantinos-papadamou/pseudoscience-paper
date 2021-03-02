@@ -3,7 +3,7 @@
 from dataset.DatasetUtils import DatasetUtils
 from classifier.featureengineering.DataPreparation import DataPreparation
 from classifier.model.PseudoscienceDeepLearningModel import PseudoscienceDeepLearningModel
-from classifier.config.config import Config
+from classifier.config.ClassifierConfig import Config
 
 # Tensorflow < 2.0.0 (installed v1.13.1)
 from tensorflow.keras.models import load_model

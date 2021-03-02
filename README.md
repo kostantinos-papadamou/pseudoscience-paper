@@ -109,11 +109,22 @@ You can either use your own HTTPS Proxies or buy some online and set them in the
   Preferrably, according to our Audit framework, all HTTPS Proxies set in this file MUST be from similar locations (e.g., "US-San Fransisco-California"). 
 - ```helpers/config/config.py```: Includes the HTTPS Proxies used to download the transcript of YouTube videos using ```youtube-dl```.
 
+### YouTube Data API
+Our codebase uses the YouTube Data API to download video metadata and for many other purposes like searching YouTube. 
+Hence, it is important that you create an API key for the YouTube Data API and set it in the configuration files of our codebase.
+You can enable the YouTube Data API for your Google account and obtain an API key following the steps <a href="https://developers.google.com/youtube/v3/getting-started">here</a>.
+
+Once you have a **YouTube Data API Key**, please set it in the following files:
+
+- ```youtubehelpers/config/YouTubeAPIConfig.py```
+  
+
+- ```youtubeauditframework/utils/YouTubeAuditFrameworkConfig.py```
 
 
 # Part 1: Detection of Pseudoscientific Videos
 We implement a deep learning model geared to detect pseudoscientific YouTube videos. 
-As also described in our paper, to train and test our model we use the dataset available <a href="">here</a>.
+As also described in our paper, to train and test our model we use the dataset available <a href="https://zenodo.org/record/4558469#.YDlltl37Q6F">here</a>.
 
 ## 1.1. Classifier Architecture
 ![Model Architecture Diagram](https://github.com/kostantinos-papadamou/pseudoscience-paper/blob/master/classifier/architecture/model_architecture.png)
@@ -327,7 +338,7 @@ Previous step will open a browser and load the YouTube authentication page. Once
 #### Step 3. Install Adblock Plus
 Once the user is authenticated you MUST install Adblock Plus manually by visiting: https://adblockplus.org/
 
-#### Step 4. Close the browser and repeat all steps for each User Profile.
+#### Step 4. Close the browser and repeat all steps for each User Profile
 Please ensure that you properly close the browser window before executing this script for another user profile, or before running any experiment.
 
 ### 2.2.3. User Profile Training (Build User's Watch History)
@@ -358,6 +369,20 @@ buildUserWatchHistoryHelper.build_watch_history()
 buildUserWatchHistoryHelper.close_selenium_browser()
 ```
 
+
+### <span style="color:#F23E5C;">Important: Remember to set the date you built User Profiles Watch Histories before running the Framework</spam>
+
+YouTube's "Delete Watch History" functionality allows you to only delete the watch history and the search history of a user <ins>**before a specific date**</ins>.
+Due to this, when using our framework, you first need to build the watch history of all the User Profiles that you want to use at one date, 
+and start performing experiments using our framework the next date.
+
+After you have built the Watch History of all User Profiles, 
+please <ins>**set the value of**</ins></span> ```USER_PROFILES_DELETE_WATCH_HISTORY_DATE``` <ins>**to the next date of that date in file:**</ins> 
+```youtubeauditframework/utils/YouTubeAuditFrameworkConfig.py```. 
+
+For example, if you build the watch histories of your User Profiles on 01-03-2021 then you should set ```USER_PROFILES_DELETE_WATCH_HISTORY_DATE='02-03-2021'``` and <ins>start running experiments using our framework the next date on 02-03-2021</ins>.
+
+
 ## 2.3. Framework Usage
 We focus on three parts of the platform: 1) the homepage; 2) the search results page; and 3) the video recommendations section (recommendations when watching videos). 
 With our framework, we simulate logged-in and non-logged-in user's behavior with varying interests and measure how the watch history affects pseudoscientific content recommendation.
@@ -367,7 +392,7 @@ Below, we provide examples of how to run the difference experiments for each par
 
 #### - YouTube Homepage
 ```bash
-
+python youtubeauditframework/perform_audit_youtube_homepage.py USER_PROFILE_NICKNAME
 ```
 
 #### - YouTube Search Results

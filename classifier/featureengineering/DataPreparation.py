@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-# import sys
-# sys.path.insert(0, '.')
-from DatasetUtils import DatasetUtils
+from dataset.DatasetUtils import DatasetUtils
 import fasttext
 import numpy as np
 import os

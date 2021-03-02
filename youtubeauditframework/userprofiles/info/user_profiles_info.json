@@ -30,6 +30,6 @@
         "date_of_birth": "dd/mm/yyyy",
         "age": 30,
         "gender": "female",
-        "proxy": "IP:PORT"
+        "proxy": "HOST:PORT"
     }
 ]

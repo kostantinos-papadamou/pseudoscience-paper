@@ -7,6 +7,7 @@ from pymongo import MongoClient
 from tqdm import tqdm
 import time
 
+from youtubeauditframework.utils.YouTubeAuditFrameworkConfig import Config
 from pseudoscientificvideosdetection.PseudoscienceClassifier import PseudoscienceClassifier
 from youtubehelpers.YouTubeVideoDownloader import YouTubeVideoDownloader
 
@@ -15,19 +16,20 @@ class DownloadAnnotateExperimentsVideos(object):
     """
     Class that downloads all the required information and annotates all the videos encountered during our experiments
     """
-    def __init__(self, api_key):
+    def __init__(self):
         #
         # MongoDB Configuration
         #
         # Host and Port
         self.client = MongoClient('localhost', 27017)
         # DB name
-        self.db = self.client['youtube_recommendation_audit']
+        self.db = self.client[Config.DB_NAME]
         # Collections
-        self.audit_framework_videos_col = self.db.audit_framework_videos
+        # self.audit_framework_videos_col = self.db.audit_framework_videos
+        self.audit_framework_videos_col = self.db[Config.AUDIT_FRAMEWORK_VIDEOS_COL]
 
         # Create a YouTube Video Downloader Object
-        self.VIDEO_DOWNLOADER = YouTubeVideoDownloader(api_key=api_key)
+        self.VIDEO_DOWNLOADER = YouTubeVideoDownloader()
 
         # Create Video Classifier Object
         self.VIDEO_ANNOTATOR = PseudoscienceClassifier()
@@ -93,13 +95,12 @@ if __name__ == '__main__':
     DELETE_VIDEO_LABELS = False
     ANNOTATE_VIDEOS = True
 
-    # TODO: Set this
-    YOUTUBE_DATA_API_KEY = '<YOUR_YOUTUBE_DATA_API_KEY>'
-    if YOUTUBE_DATA_API_KEY == '<YOUR_YOUTUBE_DATA_API_KEY>':
-        exit('Please fill your YouTube Data API Key')
+    # YOUTUBE_DATA_API_KEY = '<YOUR_YOUTUBE_DATA_API_KEY>'
+    # if YOUTUBE_DATA_API_KEY == '<YOUR_YOUTUBE_DATA_API_KEY>':
+    #     exit('Please fill your YouTube Data API Key')
 
     # Create a Video Annotator Object
-    experimentsVideosAnnotatorObject = DownloadAnnotateExperimentsVideos(api_key=YOUTUBE_DATA_API_KEY)
+    experimentsVideosAnnotatorObject = DownloadAnnotateExperimentsVideos()
 
     # Delete Video Labels
     if DELETE_VIDEO_LABELS:

@@ -13,7 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-from youtubeauditframework.utils.config import Config
+from youtubeauditframework.utils.YouTubeAuditFrameworkConfig import Config
 from youtubeauditframework.utils.Utils import Utils
 from youtubehelpers.YouTubeVideoDownloader import YouTubeVideoDownloader
 
@@ -23,7 +23,7 @@ class BuildUserWatchHistory(object):
     Class that creates the Watch History of a given YouTube User Profile by watching a predefined number
     of YouTube Videos (minimum: 100 videos)
     """
-    def __init__(self, user_profile, api_key):
+    def __init__(self, user_profile):
         # Initialize Variables
         self.USER_PROFILE = user_profile
         self.TIME_TO_SLEEP_BETWEEN_EACH_VIDEO = 5  # seconds
@@ -40,7 +40,10 @@ class BuildUserWatchHistory(object):
             self.driverOptions.headless = Config.HEADLESS
         # Set HTTPS Proxy Server
         if Config.USE_PROXY:
-            self.driverOptions.add_argument('--proxy-server={}'.format(self.get_user_proxy_server()))
+            user_proxy = self.get_user_proxy_server()
+            if user_proxy == 'HOST:PORT':
+                exit('[ERROR] Please set correct HTTPS Proxies in: "youtubeauditframework/userprofiles/info/user_profiles_info.json"')
+            self.driverOptions.add_argument('--proxy-server={}'.format(user_proxy))
         # Disable Automation Flags
         self.driverOptions.add_experimental_option("excludeSwitches", ["enable-automation"])
         self.driverOptions.add_experimental_option('useAutomationExtension', False)
@@ -62,10 +65,15 @@ class BuildUserWatchHistory(object):
         self.wait = WebDriverWait(self.driver, Config.WEBDRIVER_ELEMENT_DELAY)
 
         # Create a YouTube Video Helper
-        self.YOUTUBE_DOWNLOADER = YouTubeVideoDownloader(api_key=api_key)
+        self.YOUTUBE_DOWNLOADER = YouTubeVideoDownloader()
         return
 
     def __del__(self):
+        # Close Selenium Browser
+        self.close_selenium_browser()
+        return
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
         # Close Selenium Browser
         self.close_selenium_browser()
         return
@@ -80,7 +88,7 @@ class BuildUserWatchHistory(object):
         Method that finds the proxy server of the User Profile
         :return:
         """
-        user_profiles_info = Utils.read_json_file(filename=Config.USER_PROFILE_DATA_DIR)
+        user_profiles_info = Utils.read_json_file(filename=Config.USER_PROFILES_INFO_FILENAME)
         for user_profile in user_profiles_info:
             if user_profile['nickname'] == self.USER_PROFILE:
                 return user_profile['proxy']
@@ -98,7 +106,7 @@ class BuildUserWatchHistory(object):
     def get_video_duration(self, video_id):
         """
         Method that returns the duration of the given YouTube Video
-        :param video_id: YouTube Video ID
+        :param video_id: YouTube Video Id
         :return:
         """
         # Get Video Metadata

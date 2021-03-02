@@ -1,9 +1,14 @@
 #!/usr/bin/python
 
 from pymongo import MongoClient
-import json, os, re, unicodedata, string
+import json
+import os
+import re
+import unicodedata
+import string
 import numpy as np
-import pickle, itertools
+import pickle
+import itertools
 from tqdm import tqdm
 from keras.utils import to_categorical
 
@@ -38,8 +43,8 @@ class DatasetUtils(object):
         self.groundtruth_videos_transcripts_col = self.db.groundtruth_videos_transcripts
 
         # Video Metadata Base Directories
-        self.VIDEO_TRANSCRIPT_BASE_DIR = 'data/transcript'
-        self.VIDEO_COMMENTS_BASE_DIR = 'data/comments'
+        self.VIDEO_TRANSCRIPT_BASE_DIR = 'videosdata/transcript'
+        self.VIDEO_COMMENTS_BASE_DIR = 'videosdata/comments'
 
         # Input Features filenames
         self.VIDEO_SNIPPET_FEATURES_FILENAME = 'dataset/data/video_snippet_features.p'
