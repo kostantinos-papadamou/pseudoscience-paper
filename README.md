@@ -144,7 +144,7 @@ We implement a deep learning model geared to detect pseudoscientific YouTube vid
 As also described in our paper, to train and test our model we use the dataset available <a href="https://zenodo.org/record/4558469#.YDlltl37Q6F">here</a>.
 
 ## 1.1. Classifier Architecture
-![Model Architecture Diagram](https://github.com/kostantinos-papadamou/pseudoscience-paper/blob/master/classifier/architecture/model_architecture.png)
+![Model Architecture Diagram](https://github.com/kostantinos-papadamou/pseudoscience-paper/blob/main/classifier/architecture/model_architecture.png)
 
 ### Description
 Our classifier consists of four different branches, each processing a distinct input feature type: snippet, video tags, transcript, and the top 200 comments of a video. 
