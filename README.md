@@ -24,6 +24,7 @@ This repository makes publicly available to the research community, as well as t
 3. An [open-source library](#part-2-youtube-recommendation-algorithm-audit-framework) that provides a unified framework for assessing the effects of personalization on YouTube video recommendations in multiple parts of the platform: a) the homepage; b) the search results page; and c) the video recommendations section (recommendations when watching videos).
 
 
+### Citing the Paper:
 If you make use of any modules available in this codebase in your work, please cite the following paper:
 ```latex
 @article{papadamou2020just,
