@@ -24,7 +24,8 @@ from youtubehelpers.YouTubeVideoDownloader import YouTubeVideoDownloader
 class YouTubeHomepageAudit(object):
     """
     Class that provides all the methods to perform audit experiments on YouTube's Homepage with
-    logged-in users, while assessing the effects of personalization on YouTube's Video recommendations
+    logged-in users, non-logged-in users, and the YouTube Data API while assessing the effects
+    of personalization on YouTube's Video recommendations
     """
     def __init__(self, user_profile):
         # Initialize Variables

@@ -29,7 +29,7 @@ class YouTubeSearchAudit(object):
     """
     def __init__(self, user_profile, search_term):
         """
-        Consturctor
+        Constructor
         :param user_profile: the User Profile nickname to perform the experiment
         :param search_term: the search term to search YouTube
         """

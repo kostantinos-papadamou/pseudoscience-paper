@@ -267,14 +267,14 @@ from youtubehelpers.YouTubeVideoDownloader import YouTubeVideoDownloader
 # Create an object of the classifier
 pseudoscienceClassifier = PseudoscienceClassifier()
 # You need to provide your own YouTube Data API Key when creating an object of the YouTube Video Downloader helper class
-ytDownloader = YouTubeVideoDownloader(api_key='<YOUR_YOUTUBE_DATA_API_KEY>')
+ytDownloader = YouTubeVideoDownloader()
 
 # Download YouTube Video Details
 # Note: You can replace the following line with your own method that creates the
 #       dictionary with the video details. See YouTubeVideoDownloader class to
 #       understand the format in which we convert the comments and the transcript
 #       of the video before we pass them to the classifier
-video_details = ytDownloader.download_video(video_id='<YOUTUBE_VIDEO_ID>')
+video_details = ytDownloader.download_video(video_id='YOUTUBE_VIDEO_ID')
 
 # Make a prediction
 prediction, confidence_score = pseudoscienceClassifier.classify(video_details=video_details) 
@@ -367,7 +367,7 @@ build the watch history of each user: ```youtubeauditframework/userprofiles/Buil
 from youtubeauditframework.userprofiles.BuildUserWatchHistory import BuildUserWatchHistory
 
 # Set the User Profile's nickname for which you want to build the Watch History
-user_profile = '<USER_PROFILE_NICKNAME>'
+user_profile = 'USER_PROFILE_NICKNAME'
 
 # Create an object of the helper class for building the User Profile's Watch History
 buildUserWatchHistoryHelper = BuildUserWatchHistory(user_profile=user_profile)
