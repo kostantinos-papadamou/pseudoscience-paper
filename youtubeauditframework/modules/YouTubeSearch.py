@@ -87,7 +87,6 @@ class YouTubeSearchAudit(object):
         """ YOUTUBE DATA API HELPER """
         # Create a YouTube Video Helper
         self.YOUTUBE_VIDEO_DOWNLOADER = YouTubeVideoDownloader()
-
         return
 
     def __del__(self):
@@ -230,7 +229,7 @@ class YouTubeSearchAudit(object):
         # Add additional information
         video_metadata['retrievedAt'] = str(dt.now())
         video_metadata['statistics'] = dict()
-        video_metadata['relatedVideos'] = dict()
+        # video_metadata['relatedVideos'] = dict()
         return video_metadata
 
     def crawl_youtube_video(self, video_id):
@@ -239,10 +238,10 @@ class YouTubeSearchAudit(object):
         :return: the information of the given video
         """
         # Check if user is Authenticated before proceeding
-        if self.USER_PROFILE != 'NO_PERSONALIZATION' and  self.USER_PROFILE != 'YOUTUBE_DATA_API' and not self.is_user_authenticated():
+        if self.USER_PROFILE != 'NO_PERSONALIZATION' and self.USER_PROFILE != 'YOUTUBE_DATA_API' and not self.is_user_authenticated():
             exit(1)
 
-        """ DOWNLOAD VIDEO INFORMATION """
+        """ DOWNLOAD VIDEO METADATA """
         # Check if Video already exists in MongoDB
         video_metadata = self.audit_framework_videos_col.find_one({'id': video_id})
         if not video_metadata:
@@ -271,7 +270,7 @@ class YouTubeSearchAudit(object):
         time.sleep(3)
 
         # Get the TOP search results
-        self.driver.execute_script("window.scrollTo(0, 1300)")
+        self.driver.execute_script("window.scrollTo(0, 1500)")
         search_result_videos = list()
         search_result_items = self.driver.find_elements_by_xpath('//*[@id="thumbnail"]')
         for search_result in search_result_items:

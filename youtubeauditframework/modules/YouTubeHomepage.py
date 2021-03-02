@@ -165,7 +165,7 @@ class YouTubeHomepageAudit(object):
         # Add additional information
         video_metadata['retrievedAt'] = str(dt.now())
         video_metadata['statistics'] = dict()
-        video_metadata['relatedVideos'] = dict()
+        # video_metadata['relatedVideos'] = dict()
         return video_metadata
 
     def crawl_youtube_video(self, video_id):

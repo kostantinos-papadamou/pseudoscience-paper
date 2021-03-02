@@ -471,6 +471,29 @@ python download_annotate_experiment_videos.py
 
 ## 2.4. Analyzing Audit Experiments Results
 
+We also provide some helper classes that allows you to analyze the results of the audit experiments, 
+and generate similar plots as the plots included in the paper. 
+Note that, you should analyze the results of the experiments only after you have performed all audit experiments for all User Profiles,
+and you have also [downloaded and annotated](#232-download-and-annotate-all-experiments-videos) all audit experiments' videos.
+
+Below we provide some examples for how you can use these scripts to analyze audit experiments results and generate plots for each different part of the YouTube platform:
+
+### YouTube Homepage
+```python
+
+```
+
+### YouTube Search Results
+```python
+
+```
+
+### YouTube Video Recommendations Section (Random Walks)
+```python
+
+```
+
+
 
 ## 2.5. Framework Common Issues
 Unfortunately, due to regular Google Chrome Updates or other updates on the YouTube Website, our framework may not function properly from time to time. 

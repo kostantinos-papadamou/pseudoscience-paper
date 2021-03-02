@@ -143,7 +143,8 @@ class YouTubeVideoDownloader(object):
             # Send request to get video's information
             try:
                 response = self.YOUTUBE_API.videos().list(
-                    part='id, snippet, contentDetails, statistics',
+                    # part='id,snippet,contentDetails,statistics',
+                    part='id,snippet,contentDetails',
                     id=video_id
                 ).execute()
 
