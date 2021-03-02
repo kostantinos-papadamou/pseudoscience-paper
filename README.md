@@ -427,7 +427,11 @@ Then, run the following for each combination of search terms and User Profiles i
 ```bash
 cd youtubeauditframework
 
-python perform_audit_...
+# Run for a specific Search Term and User Profile (Replace spaces in SEARCH_TERM with '_')
+python perform_audit_youtube_search.py USER_PROFILE_NICKNAME SEARCH_TERM
+
+# Run for a specific Search Term using the YouTube Data API
+python perform_audit_youtube_search.py YOUTUBE_DATA_API SEARCH_TERM
 ```
 
 **Note:** We suggest that you simultaneously run this script for each Search Term for all the User Profiles in your scenario to avoid variations in results due to time.
@@ -441,7 +445,11 @@ Then, run the following for each combination of search terms and User Profiles i
 ```bash
 cd youtubeauditframework
 
-python perform_audit_...
+# Run for a specific Search Term and User Profile (Replace spaces in SEARCH_TERM with '_')
+python perform_audit_video_recommendations.py USER_PROFILE_NICKNAME SEARCH_TERM
+
+# Run for a specific Search Term using the YouTube Data API
+python perform_audit_video_recommendations.py YOUTUBE_DATA_API SEARCH_TERM
 ```
 
 **Note:** We suggest that you simultaneously run this script for each Search Term for all the User Profiles in your scenario to avoid variations in results due to time.

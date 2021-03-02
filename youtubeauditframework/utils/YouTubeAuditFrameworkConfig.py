@@ -15,7 +15,7 @@ class Config(object):
     #       Due to how YouTube's "Delete Watch History" functionality works you have to build the watch history of a user and set
     #       the NEXT DATE of that date in the variable below. Hence, you will also be able to run the experiments correctly the next
     #       date after the one that you built the User Profiles.
-    DELETE_WATCH_HISTORY_AFTER_DATE = 'DD-MM-YYYY'
+    DELETE_WATCH_HISTORY_AFTER_DATE = 'DD-MM-YYYY'  # Specific Date and onwards OR None to delete whole activity
     USER_PROFILES_INFO_FILENAME = 'youtubeauditframework/userprofiles/info/user_profiles_info.json'
     USER_PROFILE_DATA_DIR = 'youtubeauditframework/userprofiles/data'
     USER_PROFILES_WATCH_VIDEOS_BASE_DIR = 'youtubeauditframework/userprofiles/info'
@@ -43,15 +43,12 @@ class Config(object):
     AUDIT_FRAMEWORK_YOUTUBE_SEARCH_COL = 'audit_framework_youtube_search'
     AUDIT_FRAMEWORK_YOUTUBE_VID_RECS_COL = 'audit_framework_youtube_video_recommendations'
 
-    """ Audit Experiments Data Base Directories """
-    # YOUTUBE_HOMEPAGE_AUDIT_DATA_DIR = ''
-    # YOUTUBE_SEARCH_AUDIT_DATA_DIR = ''
-    # YOUTUBE_VIDEO_RECOMMENDATIONS_AUDIT_DATA_DIR = ''
-
     """ YouTube Homepage Audit Configuration """
     AUDIT_YOUTUBE_HOMEPAGE_LOGFILE = 'youtubeauditframework/logs/youtube_homepage/{}_AuditYouTubeHomepageLogs.json'
     AUDIT_HOMEPAGE_VIDEOS_THRESHOLD = 30
     AUDIT_HOMEPAGE_TOTAL_REPETITIONS = 50
 
     """ YouTube Search Audit Configuration """
-
+    AUDIT_YOUTUBE_SEARCH_LOGFILE = 'youtubeauditframework/logs/youtube_search/{}_{}_AuditYouTubeSearchLogs.json'
+    AUDIT_SEARCH_RESULTS_THRESHOLD = 20
+    AUDIT_YOUTUBE_SEARCH_TOTAL_REPETITIONS = 50

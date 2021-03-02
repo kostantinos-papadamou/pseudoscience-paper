@@ -73,11 +73,12 @@ class YouTubeHomepageAudit(object):
         self.audit_framework_videos_col = self.db[Config.AUDIT_FRAMEWORK_VIDEOS_COL]
         self.audit_framework_youtube_homepage_col = self.db[Config.AUDIT_FRAMEWORK_YOUTUBE_HOMEPAGE_COL]
 
-        # Load YouTube Recommendations Monitor latest statusDetails from the file
+        # Load YouTube Homepage Audit Experiment latest details from the logfile
         self.HOMEPAGE_AUDIT_DETAILS = self.load_youtube_homepage_audit_details()
 
+        """ YOUTUBE DATA API HELPER """
         # Create a YouTube Video Helper
-        self.YOUTUBE_DOWNLOADER = YouTubeVideoDownloader()
+        self.YOUTUBE_VIDEO_DOWNLOADER = YouTubeVideoDownloader()
         return
 
     def __del__(self):
@@ -113,8 +114,8 @@ class YouTubeHomepageAudit(object):
         :return: a JSON dict with the contents of the file
         """
         # Read status details from file if it exists
-        if os.path.isfile(Config.AUDIT_YOUTUBE_HOMEPAGE_LOGFILE):
-            with open(Config.AUDIT_YOUTUBE_HOMEPAGE_LOGFILE.format(self.USER_PROFILE)) as file:
+        if os.path.isfile(Config.AUDIT_YOUTUBE_HOMEPAGE_LOGFILE.format(self.USER_PROFILE)):
+            with open(file=Config.AUDIT_YOUTUBE_HOMEPAGE_LOGFILE.format(self.USER_PROFILE)) as file:
                 return dict(json.load(file))
 
         # Create a new JSON dict and return
@@ -133,7 +134,8 @@ class YouTubeHomepageAudit(object):
         Method that writes the provided YouTube Recommendation Monitor details in a file
         :return:
         """
-        print(json.dumps(self.HOMEPAGE_AUDIT_DETAILS, sort_keys=False, ensure_ascii=False, indent=4), file=open(Config.AUDIT_YOUTUBE_HOMEPAGE_LOGFILE.format(self.USER_PROFILE), mode='w'))
+        print(json.dumps(self.HOMEPAGE_AUDIT_DETAILS, sort_keys=False, ensure_ascii=False, indent=4),
+              file=open(file=Config.AUDIT_YOUTUBE_HOMEPAGE_LOGFILE.format(self.USER_PROFILE), mode='w'))
         return
 
     def is_user_authenticated(self):
@@ -157,7 +159,7 @@ class YouTubeHomepageAudit(object):
         :return:
         """
         # Get Video Metadata
-        video_metadata = self.YOUTUBE_DOWNLOADER.download_video_metadata(video_id=video_id, retrieve_recommended_videos=False)
+        video_metadata = self.YOUTUBE_VIDEO_DOWNLOADER.download_video_metadata(video_id=video_id, retrieve_recommended_videos=False)
 
         # Add additional information
         video_metadata['retrievedAt'] = str(dt.now())
@@ -171,9 +173,8 @@ class YouTubeHomepageAudit(object):
         :return: the information of the given video
         """
         # Check if user is Authenticated before proceeding
-        if self.USER_PROFILE != 'NO_PERSONALIZATION':
-            if not self.is_user_authenticated():
-                exit(1)
+        if self.USER_PROFILE != 'NO_PERSONALIZATION' and not self.is_user_authenticated():
+            exit(1)
 
         """ DOWNLOAD VIDEO INFORMATION """
         # Check if Video already exists in MongoDB
@@ -229,20 +230,19 @@ class YouTubeHomepageAudit(object):
         """
         print('--- [{}] YOUTUBE HOMEPAGE AUDIT STARTED'.format(self.USER_PROFILE))
 
-        # Initialiaze variables
+        # Initialize variables
         repetitions_cntr = self.HOMEPAGE_AUDIT_DETAILS['CURRENT_EXPERIMENT_REPETITION']
         audit_experiment_details = self.HOMEPAGE_AUDIT_DETAILS['HOMEPAGE_EXPERIMENT_DETAILS']
 
         # Perform All Experiment Repetitions
         while repetitions_cntr < Config.AUDIT_HOMEPAGE_TOTAL_REPETITIONS:
 
-            # Init the list where we will store the random walk details
-            repetition_start_time = time.time()
+            # Init current repetition details
             curr_repetition_details = dict()
 
             print('\n--- [{}]-[{}/{}] Experiment Repetition STARTED'.format(self.USER_PROFILE, repetitions_cntr+1, Config.AUDIT_HOMEPAGE_TOTAL_REPETITIONS))
 
-            # Start YouTube's Homepage Audit experiment repetition
+            # Perform YouTube's Homepage Audit experiment repetition
             user_homepage_top_videos = list()
             while len(user_homepage_top_videos) < Config.AUDIT_HOMEPAGE_VIDEOS_THRESHOLD:
                 user_homepage_top_videos = self.get_homepage_top_videos()

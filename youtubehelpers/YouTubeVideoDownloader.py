@@ -103,6 +103,34 @@ class YouTubeVideoDownloader(object):
                 # Sleep for 30 seconds Change API KEY
                 time.sleep(30)
 
+    def search_youtube(self, search_term, max_search_results):
+        """
+        Method that searches YouTube using the YouTube Data API with a predefined SEARCH TERM and
+        returns the Video IDs of the top X videos
+        :return:
+        """
+        # Search YouTube
+        search_result_videos = list()
+        while True:
+            try:
+                # Call the search.list method to retrieve results matching the specified search term.
+                search_response = self.YOUTUBE_API.search().list(
+                    q=search_term,
+                    type="video",
+                    part="id",
+                    maxResults=max_search_results,
+                    relevanceLanguage='en'
+                ).execute()
+
+                # Merge video ids
+                for search_result in search_response.get("items", []):
+                    search_result_videos.append(search_result["id"]["videoId"])
+                return search_result_videos
+            except (HttpError, SocketError) as error:
+                print('[ERROR] HTTP Error occurred while searching YouTube for: {}'.format(search_term))
+                # Sleep for 30 seconds and change API KEY
+                time.sleep(30)
+
     def download_video_metadata(self, video_id, retrieve_recommended_videos=None):
         """
         Method that queries the YouTube Data API and retrieves the details of a given video.

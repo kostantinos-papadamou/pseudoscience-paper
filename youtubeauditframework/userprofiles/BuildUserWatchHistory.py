@@ -131,16 +131,20 @@ class BuildUserWatchHistory(object):
 
     def clear_user_watch_history(self):
         """
-        Method that deletes the YouTube's Watch History of the logged in user.
-        The deletion of User's Watch History has been tested manually and it works (Recommendations are also affected).
-        :return: None
+        Method that deletes the YouTube's Watch History of the logged-in User Profile
+        :return:
         """
         # Load YouTube Activity Control Management page
         self.driver.get('https://myactivity.google.com/activitycontrols/youtube?utm_source=my-activity&hl=en')
         time.sleep(3)
 
         # Click "Deleted Activity by" button
-        self.wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/header/div[4]/div[2]/div/c-wiz/div/div/nav/a[3]'))).click()
+        # self.wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/header/div[4]/div[2]/div/c-wiz/div/div/nav/a[3]'))).click()
+        try:
+            self.wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/header/div[4]/div[2]/div/c-wiz/div/div/nav/a[3]'))).click()
+        except TimeoutException:
+            # Click the other Delete button
+            self.wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/c-wiz/div/div[2]/c-wiz[1]/div/div/div[2]/div[2]/div/button'))).click()
 
         # Select to DELETE ALL Activity
         self.wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/div[7]/div/div[2]/span/div[2]/div/c-wiz/div/div[3]/ul/li[3]'))).click()
