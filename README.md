@@ -14,6 +14,16 @@ Finally, we shed light on how a user's watch history substantially affects the t
 
 Preprint available <a href="https://arxiv.org/abs/2010.11638">here</a>.
 
+### What do we offer in this repository?
+This repository makes publicly available to the research community, as well as the open-source community the folllowing tools and libraries:
+
+1. The [codebase](#part-1-detection-of-pseudoscientific-videos) of a Deep Learning Classifier for pseudoscientific videos detection on YouTube, and [examples](#13-training-the-classifier) on how to train and test it;
+
+2. A [library](#14-classifier-usage) that simplifies the usage of the trained classifier and implements all the required tasks for the classification of YouTube videos;
+
+3. An [open-source library](#part-2-youtube-recommendation-algorithm-audit-framework) that provides a unified framework for assessing the effects of personalization on YouTube video recommendations in multiple parts of the platform: a) the homepage; b) the search results page; and c) the video recommendations section (recommendations when watching videos).
+
+
 If you make use of any modules available in this codebase in your work, please cite the following paper:
 ```latex
 @article{papadamou2020just,
@@ -31,13 +41,14 @@ If you make use of any modules available in this codebase in your work, please c
 - [Part 1: Detection of Pseudoscientific Videos](#part-1-detection-of-pseudoscientific-videos)
   - [Classifier Architecture](#11-classifier-architecture)
   - [Prerequisites](#12-prerequisites)
-  - [Classifier Codebase (Model Training)](#13-training-the-classifier)
+  - [Classifier Codebase (Training the Classifier)](#13-training-the-classifier)
   - [Classifier Usage](#14-classifier-usage)
 - [Part 2: YouTube Recommendation Algorithm Audit Framework](#part-2-youtube-recommendation-algorithm-audit-framework)
   - [Framework Prerequisites](#21-framework-prerequisites)
   - [User Profile Creation](#22-user-profile-creation)
-  - [Framework Usage (Running Experiments)](#23-framework-usage)
-  - [Framework Common Issues](#24-framework-common-issues)
+  - [Framework Usage (Running Audit Experiments)](#23-framework-usage)
+  - [Analyzing Results](#24-analyzing-audit-experiments-results)
+  - [Framework Common Issues](#25-framework-common-issues)
 - [Acknowledgements](#acknowledgements)
 - [LICENSE](#license)
 
@@ -54,9 +65,14 @@ In this repository, we provide to the research community the source code of the 
 In particular, the ability to run this kind of experiments while taking into account users' viewing history will be beneficial to researchers focusing on demystifying YouTube’s recommendation algorithm—irrespective of the topic of interest. 
 Our methodology and codebase are generic and can be used to study other topics besides pseudoscience, e.g., additional conspiracy theories.
 More specifically, we make publicly available the following set of tools and libraries:
-1. The codebase of a Deep Learning Classifier for pseudoscientific videos detection on YouTube;
-2. The trained classifier and a library that simplifies the usage of the classifier and implements all the required tasks for the classification of YouTube videos;
-3. An open source library that provides a unified framework for assessing the effects of personalization on YouTube video recommendations in multiple parts of the platform.
+
+1. The [codebase](#part-1-detection-of-pseudoscientific-videos) of a Deep Learning Classifier for pseudoscientific videos detection on YouTube, and [examples](#13-training-the-classifier) on how to train and test it;
+
+2. A [library](#14-classifier-usage) that simplifies the usage of the classifier and implements all the required tasks for the classification of YouTube videos;
+
+3. An [open-source library](#part-2-youtube-recommendation-algorithm-audit-framework) that provides a unified framework for assessing the effects of personalization on YouTube video recommendations in multiple parts of the platform: a) the homepage; b) the search results page; and c) the video recommendations section (recommendations when watching videos).
+
+
 
 # Installation
 Follow the steps below to install and configure all prerequisites for both the training and usage of the Pseudoscientific Content Detection Classifier (Part 1), and for using our YouTube Audit Framework (Part 2). 
@@ -105,7 +121,7 @@ Our codebase uses HTTPS Proxies for multiple purposes:
   This is mainly to ensure that all User Profiles used in our framework have the same geolocation and avoid changes to our results due to geolocation personalization.
 
 You can either use your own HTTPS Proxies or buy some online and set them in the following files:
-- ```youtubeauditframework/userprofiles/....py```: Includes the HTTPS Proxies used to simulate distinct logged-in user profiles accessing YouTube from specific geolocations. 
+- ```youtubeauditframework/userprofiles/info/user_profiles_info.json```: Includes the HTTPS Proxies used to simulate distinct logged-in user profiles accessing YouTube from specific geolocations. 
   Preferrably, according to our Audit framework, all HTTPS Proxies set in this file MUST be from similar locations (e.g., "US-San Fransisco-California"). 
 - ```helpers/config/config.py```: Includes the HTTPS Proxies used to download the transcript of YouTube videos using ```youtube-dl```.
 
@@ -114,7 +130,7 @@ Our codebase uses the YouTube Data API to download video metadata and for many o
 Hence, it is important that you create an API key for the YouTube Data API and set it in the configuration files of our codebase.
 You can enable the YouTube Data API for your Google account and obtain an API key following the steps <a href="https://developers.google.com/youtube/v3/getting-started">here</a>.
 
-Once you have a **YouTube Data API Key**, please set it in the following files:
+Once you have a **YouTube Data API Key**, please set the ```YOUTUBE_DATA_API_KEY``` variable in the following files:
 
 - ```youtubehelpers/config/YouTubeAPIConfig.py```
   
@@ -377,13 +393,13 @@ Due to this, when using our framework, you first need to build the watch history
 and start performing experiments using our framework the next date.
 
 After you have built the Watch History of all User Profiles, 
-please <ins>**set the value of**</ins></span> ```USER_PROFILES_DELETE_WATCH_HISTORY_DATE``` <ins>**to the next date of that date in file:**</ins> 
+please <ins>**set the value of**</ins></span> ```DELETE_WATCH_HISTORY_AFTER_DATE``` <ins>**to the next date of that date in file:**</ins> 
 ```youtubeauditframework/utils/YouTubeAuditFrameworkConfig.py```. 
 
-For example, if you build the watch histories of your User Profiles on 01-03-2021 then you should set ```USER_PROFILES_DELETE_WATCH_HISTORY_DATE='02-03-2021'``` and <ins>start running experiments using our framework the next date on 02-03-2021</ins>.
+For example, if you build the watch histories of your User Profiles on 01-03-2021 then you should set ```DELETE_WATCH_HISTORY_AFTER_DATE='02-03-2021'``` and <ins>start running experiments using our framework the next date on 02-03-2021</ins>.
 
 
-## 2.3. Framework Usage
+## 2.3. Framework Usage (Running Audit Experiments)
 We focus on three parts of the platform: 1) the homepage; 2) the search results page; and 3) the video recommendations section (recommendations when watching videos). 
 With our framework, we simulate logged-in and non-logged-in user's behavior with varying interests and measure how the watch history affects pseudoscientific content recommendation.
 Below, we provide examples of how to run the difference experiments for each part of the YouTube platform.

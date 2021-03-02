@@ -15,7 +15,7 @@ class Config(object):
     #       Due to how YouTube's "Delete Watch History" functionality works you have to build the watch history of a user and set
     #       the NEXT DATE of that date in the variable below. Hence, you will also be able to run the experiments correctly the next
     #       date after the one that you built the User Profiles.
-    USER_PROFILES_DELETE_WATCH_HISTORY_DATE = 'DD-MM-YYYY'
+    DELETE_WATCH_HISTORY_AFTER_DATE = 'DD-MM-YYYY'
     USER_PROFILES_INFO_FILENAME = 'youtubeauditframework/userprofiles/info/user_profiles_info.json'
     USER_PROFILE_DATA_DIR = 'youtubeauditframework/userprofiles/data'
     USER_PROFILES_WATCH_VIDEOS_BASE_DIR = 'youtubeauditframework/userprofiles/info'
@@ -27,7 +27,7 @@ class Config(object):
     """ YouTube Data API Config """
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
-    YOUTUBE_DATA_API_KEY = '<YOUR_YOUTUBE_DATA_API_KEY>'
+    YOUTUBE_DATA_API_KEY = 'YOUR_YOUTUBE_DATA_API_KEY'
     # What Video Attributes to download
     DOWNLOAD_SNIPPET = True
     DOWNLOAD_VIDEO_TAGS = True
