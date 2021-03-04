@@ -478,7 +478,7 @@ and you have also [downloaded and annotated](#232-download-and-annotate-all-expe
 
 Below we provide some examples for how you can use these helper classes to analyze audit experiments results and generate plots for each different part of the YouTube platform:
 
-### YouTube Homepage
+### - YouTube Homepage
 
 ```python
 from youtubeauditframework.analysis.YouTubeHomepageAuditAnalysis import YouTubeHomepageAuditAnalysis
@@ -502,7 +502,7 @@ experimentAnalysisObject.analyze_audit_experiments()
 experimentAnalysisObject.plot_results()
 ```
 
-### YouTube Search Results
+### - YouTube Search Results
 ```python
 from youtubeauditframework.analysis.YouTubeSearchAuditAnalysis import YouTubeSearchAuditAnalysis
 
@@ -531,7 +531,7 @@ experimentAnalysisObject.analyze_audit_experiments()
 experimentAnalysisObject.plot_results()
 ```
 
-### YouTube Video Recommendations Section (Random Walks)
+### - YouTube Video Recommendations Section (Random Walks)
 ```python
 from youtubeauditframework.analysis.YouTubeVideoRecommendationsAuditAnalysis import YouTubeVideoRecommendationsAuditAnalysis
 
