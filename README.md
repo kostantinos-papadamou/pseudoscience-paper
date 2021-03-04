@@ -476,22 +476,94 @@ and generate similar plots as the plots included in the paper.
 Note that, you should analyze the results of the experiments only after you have performed all audit experiments for all User Profiles,
 and you have also [downloaded and annotated](#232-download-and-annotate-all-experiments-videos) all audit experiments' videos.
 
-Below we provide some examples for how you can use these scripts to analyze audit experiments results and generate plots for each different part of the YouTube platform:
+Below we provide some examples for how you can use these helper classes to analyze audit experiments results and generate plots for each different part of the YouTube platform:
 
 ### YouTube Homepage
-```python
 
+```python
+from youtubeauditframework.analysis.YouTubeHomepageAuditAnalysis import YouTubeHomepageAuditAnalysis
+
+# Set the mapping between the User Profiles used for the experiments and their Plot Legend labels
+# Below is an example from the one used in the paper
+plot_legend_labels = {
+  'SCIENCE_USER': 'Science Profile',
+  'PSEUDOSCIENCE_USER': 'Pseudoscience Profile',
+  'SCIENCE_PSEUDOSCIENCE_USER': 'Science/Pseudoscience Profile',
+  'NO_PERSONALIZATION': 'No Profile (Browser)',
+}
+
+# Create a YouTube Homepage Audit Experiment Analysis
+experimentAnalysisObject = YouTubeHomepageAuditAnalysis(legend_labels_mapping=plot_legend_labels)
+
+# Perform audit experiments results analysis
+experimentAnalysisObject.analyze_audit_experiments()
+
+# Generate Plot
+experimentAnalysisObject.plot_results()
 ```
 
 ### YouTube Search Results
 ```python
+from youtubeauditframework.analysis.YouTubeSearchAuditAnalysis import YouTubeSearchAuditAnalysis
 
+# Set the considered Serach Terms to analyze and generate plots
+# Below is an example from the one used in the paper
+considered_search_terms = ['covid-19', 'coronavirus']
+
+# Set the mapping between the User Profiles used for the experiments and their Plot Legend labels
+# Below is an example from the one used in the paper
+plot_legend_labels = {
+  'SCIENCE_USER': 'Science Profile',
+  'PSEUDOSCIENCE_USER': 'Pseudoscience Profile',
+  'SCIENCE_PSEUDOSCIENCE_USER': 'Science/Pseudoscience Profile',
+  'NO_PERSONALIZATION': 'No Profile (Browser)',
+  'YOUTUBE_DATA_API': 'No Profile (YouTube Data API)'
+}
+
+# Create a YouTube Search Audit Experiment Analysis
+experimentAnalysisObject = YouTubeSearchAuditAnalysis(search_terms=considered_search_terms, 
+                                                      legend_labels_mapping=plot_legend_labels)
+
+# Perform audit experiments results analysis
+experimentAnalysisObject.analyze_audit_experiments()
+
+# Generate Plot
+experimentAnalysisObject.plot_results()
 ```
 
 ### YouTube Video Recommendations Section (Random Walks)
 ```python
+from youtubeauditframework.analysis.YouTubeVideoRecommendationsAuditAnalysis import YouTubeVideoRecommendationsAuditAnalysis
 
+# Set the considered Serach Terms to analyze and generate plots
+# Below is an example from the one used in the paper
+considered_search_terms = ['covid-19', 'coronavirus']
+
+# Set the mapping between the User Profiles used for the experiments and their Plot Legend labels
+# Below is an example from the one used in the paper
+plot_legend_labels = {
+  'SCIENCE_USER': 'Science Profile',
+  'PSEUDOSCIENCE_USER': 'Pseudoscience Profile',
+  'SCIENCE_PSEUDOSCIENCE_USER': 'Science/Pseudoscience Profile',
+  'NO_PERSONALIZATION': 'No Profile (Browser)',
+  'YOUTUBE_DATA_API': 'No Profile (YouTube Data API)'
+}
+
+# Create a YouTube Search Audit Experiment Analysis
+experimentAnalysisObject = YouTubeVideoRecommendationsAuditAnalysis(search_terms=considered_search_terms, 
+                                                                    legend_labels_mapping=plot_legend_labels)
+
+# Perform audit experiments (Random Walks) results analysis
+experimentAnalysisObject.analyze_audit_experiments()
+
+
+# Generate Random Walks Plot
+experimentAnalysisObject.plot_results()
 ```
+
+**<ins>Note:</ins>** Also, note that the provided helper classes analyze the results considering Pseudoscientific videos found in the audit experiments and provide similar plots
+as those in the paper. If you wish to use our codebase considering another type(s) of inappropriate videos then you need to adapt both the codebase
+of our framework, as well as the helper classes for analyzing the results of the audit experiments.
 
 
 

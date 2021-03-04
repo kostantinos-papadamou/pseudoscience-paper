@@ -43,17 +43,17 @@ class Config(object):
     AUDIT_FRAMEWORK_YOUTUBE_SEARCH_COL = 'audit_framework_youtube_search'
     AUDIT_FRAMEWORK_YOUTUBE_VIDEO_RECS_COL = 'audit_framework_youtube_video_recommendations'
 
-    """ YouTube Homepage Audit Configuration """
+    """ YouTube HOMEPAGE Audit Configuration """
     AUDIT_YOUTUBE_HOMEPAGE_LOGFILE = 'youtubeauditframework/logs/youtube_homepage/{}_AuditYouTubeHomepageLogs.json'
     AUDIT_HOMEPAGE_VIDEOS_THRESHOLD = 30
     AUDIT_HOMEPAGE_TOTAL_REPETITIONS = 50
 
-    """ YouTube Search Audit Configuration """
+    """ YouTube SEARCH Audit Configuration """
     AUDIT_YOUTUBE_SEARCH_LOGFILE = 'youtubeauditframework/logs/youtube_search/{}_{}_AuditYouTubeSearchLogs.json'
     AUDIT_SEARCH_RESULTS_THRESHOLD = 20
     AUDIT_YOUTUBE_SEARCH_TOTAL_REPETITIONS = 50
 
-    """ YouTube Video Recommendations Sections Audit (Random Walks) Configuration """
+    """ YouTube VIDEO RECOMMENDATIONS SECTION Audit (Random Walks) Configuration """
     AUDIT_VIDEO_RECOMMENDATIONS_SECTION_LOGFILE = 'youtubeauditframework/logs/video_recommendations_section/{}_{}_AuditYouTubeVideoRecommendationsSectionLogs.json'
     AUDIT_RANDOM_WALKS_SEARCH_RESULTS_THRESHOLD = 20
     AUDIT_RANDOM_WALKS_MAX_HOPS = 5
@@ -61,3 +61,7 @@ class Config(object):
     AUDIT_RANDOM_WALKS_WATCH_VIDEO = True
     AUDIT_RANDOM_WALKS_WATCH_VIDEO_PERCENTAGE = 50
     AUDIT_RANDOM_WALKS_RECOMMENDED_VIDEOS_THRESHOLD = 10
+
+    """ Audit Experiments Analysis Configuration """
+    AUDIT_ANALYSIS_CONSIDER_UNIQUE_VIDEOS_ONLY = True
+    # AUDIT_FRAMEWORK_PLOTS_DIR = ''
