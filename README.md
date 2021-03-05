@@ -177,7 +177,7 @@ wget https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.v
 unzip wiki-news-300d-1M.vec.zip
 ```
 
-### 1.2.2. Create MongoDB Collections
+### 1.2.2. Create MongoDB Database and Collections
 
 1. Create a MongoDB database called: ```youtube_pseudoscience_dataset``` either using Robo3T GUI or from the terminal.
 
@@ -286,7 +286,7 @@ prediction, confidence_score = pseudoscienceClassifier.classify(video_details=vi
 
 ## 2.1. Framework Prerequisites
 
-### 2.1.1. Create MongoDB:
+### 2.1.1. Create MongoDB Database and Collections:
 
 1. Create a MongoDB database called: ```youtube_recommendation_audit``` either using Robo3T GUI or from the terminal.
 
