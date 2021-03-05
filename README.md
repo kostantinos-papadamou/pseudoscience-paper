@@ -596,7 +596,7 @@ If you have trouble accessing your created YouTube accounts from the automated b
 You can enable "less secure app access" to a Google Account in the following way:
 - Open a browser and login to Google using the credentials of the corresponding User Profile.
 - Visit <a hred="https://myaccount.google.com/security">Google Account Security</a> settings.
-- Scroll down to "Less secure app access" section and click "Turn on access" or enable it directly from <a href="myaccount.google.com/lesssecureapps">here</a>.
+- Scroll down to "Less secure app access" section and click "Turn on access" or enable it directly from <a href="https://myaccount.google.com/lesssecureapps">here</a>.
 
 # Acknowledgements
 Please see the <a href="https://arxiv.org/abs/2010.11638">paper</a> for funding details and non-code related acknowledgements.
