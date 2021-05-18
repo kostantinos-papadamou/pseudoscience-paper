@@ -3,16 +3,12 @@
 ### Authors: Kostantinos Papadamou, Savvas Zannettou, Jeremy Blackburn, Emiliano De Cristofaro, Gianluca Stringhini, and Michael Sirivianos
 
 ## Abstract
-The role played by YouTube's recommendation algorithm in unwittingly promoting misinformation and conspiracy theories is not entirely understood. 
-Yet, this can have dire real-world consequences, especially when pseudoscientific content is promoted to users at critical times, such as the COVID-19 pandemic. 
-In this paper, we set out to characterize and detect pseudoscientific misinformation on YouTube. 
-We collect 6.6K videos related to COVID-19, the Flat Earth theory, as well as the anti-vaccination and anti-mask movements. Using crowdsourcing, we annotate them as pseudoscience, legitimate science, or irrelevant and train a deep learning classifier to detect pseudoscientific videos with an accuracy of 0.79.
-We quantify user exposure to this content on various parts of the platform and how this exposure changes based on the user's watch history. 
-We find that YouTube suggests more pseudoscientific content regarding traditional pseudoscientific topics (e.g., flat earth, anti-vaccination) than for emerging ones (like COVID-19). 
-At the same time, these recommendations are more common on the search results page than on a user's homepage or when actively watching videos. 
-Finally, we shed light on how a user's watch history substantially affects the type of recommended videos.
+The role played by YouTube's recommendation algorithm in unwittingly promoting misinformation and conspiracy theories is not entirely understood. Yet, this can have dire real-world consequences, especially when pseudoscientific content is promoted to users at critical times, such as the COVID-19 pandemic. In this paper, we set out to characterize and detect pseudoscientific misinformation on YouTube. We collect 6.6K videos related to COVID-19, the Flat Earth theory, as well as the anti-vaccination and anti-mask movements. Using crowdsourcing, we annotate them as pseudoscience, legitimate science, or irrelevant and train a deep learning classifier to detect pseudoscientific videos with an accuracy of 0.79.
+
+We quantify user exposure to this content on various parts of the platform and how this exposure changes based on the user's watch history. We find that YouTube suggests more pseudoscientific content regarding traditional pseudoscientific topics (e.g., flat earth, anti-vaccination) than for emerging ones (like COVID-19). At the same time, these recommendations are more common on the search results page than on a user's homepage or in the recommendation section when actively watching videos. Finally, we shed light on how a user's watch history substantially affects the type of recommended videos.
 
 Preprint available <a href="https://arxiv.org/abs/2010.11638">here</a>.
+Dataset available <a href="https://zenodo.org/record/4769731">here</a>.
 
 ### What do we offer in this repository?
 This repository makes publicly available to the research community, as well as the open-source community the folllowing tools and libraries:
