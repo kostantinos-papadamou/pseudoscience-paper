@@ -1,18 +1,14 @@
-# "It is just a flu": Assessing the Effect of Watch History on YouTube's Pseudoscientific Video Recommendations
+# Code and Resources for "It is just a flu": Assessing the Effect of Watch History on YouTube's Pseudoscientific Video Recommendations
 
 ### Authors: Kostantinos Papadamou, Savvas Zannettou, Jeremy Blackburn, Emiliano De Cristofaro, Gianluca Stringhini, and Michael Sirivianos
 
 ## Abstract
-The role played by YouTube's recommendation algorithm in unwittingly promoting misinformation and conspiracy theories is not entirely understood. 
-Yet, this can have dire real-world consequences, especially when pseudoscientific content is promoted to users at critical times, such as the COVID-19 pandemic. 
-In this paper, we set out to characterize and detect pseudoscientific misinformation on YouTube. 
-We collect 6.6K videos related to COVID-19, the Flat Earth theory, as well as the anti-vaccination and anti-mask movements. Using crowdsourcing, we annotate them as pseudoscience, legitimate science, or irrelevant and train a deep learning classifier to detect pseudoscientific videos with an accuracy of 0.79.
-We quantify user exposure to this content on various parts of the platform and how this exposure changes based on the user's watch history. 
-We find that YouTube suggests more pseudoscientific content regarding traditional pseudoscientific topics (e.g., flat earth, anti-vaccination) than for emerging ones (like COVID-19). 
-At the same time, these recommendations are more common on the search results page than on a user's homepage or when actively watching videos. 
-Finally, we shed light on how a user's watch history substantially affects the type of recommended videos.
+The role played by YouTube's recommendation algorithm in unwittingly promoting misinformation and conspiracy theories is not entirely understood. Yet, this can have dire real-world consequences, especially when pseudoscientific content is promoted to users at critical times, such as the COVID-19 pandemic. In this paper, we set out to characterize and detect pseudoscientific misinformation on YouTube. We collect 6.6K videos related to COVID-19, the Flat Earth theory, as well as the anti-vaccination and anti-mask movements. Using crowdsourcing, we annotate them as pseudoscience, legitimate science, or irrelevant and train a deep learning classifier to detect pseudoscientific videos with an accuracy of 0.79.
+
+We quantify user exposure to this content on various parts of the platform and how this exposure changes based on the user's watch history. We find that YouTube suggests more pseudoscientific content regarding traditional pseudoscientific topics (e.g., flat earth, anti-vaccination) than for emerging ones (like COVID-19). At the same time, these recommendations are more common on the search results page than on a user's homepage or in the recommendation section when actively watching videos. Finally, we shed light on how a user's watch history substantially affects the type of recommended videos.
 
 Preprint available <a href="https://arxiv.org/abs/2010.11638">here</a>.
+Dataset available <a href="https://zenodo.org/record/4769731">here</a>.
 
 ### What do we offer in this repository?
 This repository makes publicly available to the research community, as well as the open-source community the folllowing tools and libraries:
@@ -177,7 +173,7 @@ wget https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.v
 unzip wiki-news-300d-1M.vec.zip
 ```
 
-### 1.2.2. Create MongoDB Collections
+### 1.2.2. Create MongoDB Database and Collections
 
 1. Create a MongoDB database called: ```youtube_pseudoscience_dataset``` either using Robo3T GUI or from the terminal.
 
@@ -286,7 +282,7 @@ prediction, confidence_score = pseudoscienceClassifier.classify(video_details=vi
 
 ## 2.1. Framework Prerequisites
 
-### 2.1.1. Create MongoDB:
+### 2.1.1. Create MongoDB Database and Collections:
 
 1. Create a MongoDB database called: ```youtube_recommendation_audit``` either using Robo3T GUI or from the terminal.
 
@@ -596,7 +592,7 @@ If you have trouble accessing your created YouTube accounts from the automated b
 You can enable "less secure app access" to a Google Account in the following way:
 - Open a browser and login to Google using the credentials of the corresponding User Profile.
 - Visit <a hred="https://myaccount.google.com/security">Google Account Security</a> settings.
-- Scroll down to "Less secure app access" section and click "Turn on access" or enable it directly from <a href="myaccount.google.com/lesssecureapps">here</a>.
+- Scroll down to "Less secure app access" section and click "Turn on access" or enable it directly from <a href="https://myaccount.google.com/lesssecureapps">here</a>.
 
 # Acknowledgements
 Please see the <a href="https://arxiv.org/abs/2010.11638">paper</a> for funding details and non-code related acknowledgements.
