@@ -1,4 +1,4 @@
-# Code for "It is just a flu": Assessing the Effect of Watch History on YouTube's Pseudoscientific Video Recommendations
+# Code and Resources for "It is just a flu": Assessing the Effect of Watch History on YouTube's Pseudoscientific Video Recommendations
 
 ### Authors: Kostantinos Papadamou, Savvas Zannettou, Jeremy Blackburn, Emiliano De Cristofaro, Gianluca Stringhini, and Michael Sirivianos
 
